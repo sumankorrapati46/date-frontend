@@ -74,6 +74,7 @@ const EmployeeDashboard = () => {
           district: farmer.district,
           location: `${farmer.district}, ${farmer.state}`,
           kycStatus: farmer.kycStatus || 'PENDING',
+          assignedDate: farmer.assignedDate || farmer.kycSubmittedDate || new Date().toISOString().split('T')[0],
           lastAction: farmer.kycReviewedDate || farmer.kycSubmittedDate || new Date().toISOString().split('T')[0],
           notes: `KYC Status: ${farmer.kycStatus || 'PENDING'}`,
           assignedEmployee: user.name || 'Employee'
@@ -96,7 +97,7 @@ const EmployeeDashboard = () => {
   const getFilteredFarmers = () => {
     return assignedFarmers.filter(farmer => {
       const matchesKycStatus = !filters.kycStatus || farmer.kycStatus === filters.kycStatus;
-      const matchesAssignedDate = !filters.assignedDate || farmer.assignedDate === filters.assignedDate;
+      const matchesAssignedDate = !filters.assignedDate || (farmer.assignedDate && farmer.assignedDate === filters.assignedDate);
       
       return matchesKycStatus && matchesAssignedDate;
     });
@@ -121,6 +122,7 @@ const EmployeeDashboard = () => {
   const getTodoList = () => {
     const newAssignments = assignedFarmers.filter(f => {
       // New assignments not yet viewed (assigned within last 3 days)
+      if (!f.assignedDate) return false;
       const assignedDate = new Date(f.assignedDate);
       const today = new Date();
       const daysDiff = (today - assignedDate) / (1000 * 60 * 60 * 24);
@@ -515,6 +517,7 @@ const EmployeeDashboard = () => {
 
         {/* Farmers Table or Inline Add Farmer */}
         {!showFarmerForm ? (
+
         <DataTable
           data={filteredFarmers}
           columns={[
@@ -525,60 +528,29 @@ const EmployeeDashboard = () => {
             { key: 'kycStatus', label: 'KYC Status' },
             { key: 'lastAction', label: 'Last Action' }
           ]}
-          customActions={[
-            {
-              label: 'View',
-              icon: '👁️',
-              className: 'info',
-              onClick: handleViewFarmer
-            },
-            {
-              label: 'Edit',
-              icon: '✏️',
-              className: 'primary',
-              onClick: handleEditFarmer
-            },
-            {
-              label: 'KYC',
-              icon: '📋',
-              className: 'warning',
-              onClick: (farmer) => {
-                setSelectedFarmer(farmer);
-                setShowKYCModal(true);
-              }
-            },
-            {
-              label: 'Approve',
-              icon: '✅',
-              className: 'success',
-              onClick: (farmer) => handleKYCUpdate(farmer.id, 'APPROVED'),
-              showCondition: (farmer) => farmer.kycStatus === 'PENDING' || farmer.kycStatus === 'REFER_BACK'
-            },
-            {
-              label: 'Refer Back',
-              icon: '🔄',
-              className: 'warning',
-              onClick: (farmer) => {
-                const reason = prompt('Enter reason for refer back:');
-                if (reason) {
-                  handleKYCUpdate(farmer.id, 'REFER_BACK', reason);
-                }
-              },
-              showCondition: (farmer) => farmer.kycStatus === 'PENDING'
-            },
-            {
-              label: 'Reject',
-              icon: '❌',
-              className: 'danger',
-              onClick: (farmer) => {
-                const reason = prompt('Enter reason for rejection:');
-                if (reason) {
-                  handleKYCUpdate(farmer.id, 'REJECTED', reason);
-                }
-              },
-              showCondition: (farmer) => farmer.kycStatus === 'PENDING' || farmer.kycStatus === 'REFER_BACK'
-            }
-          ]}
+                     customActions={[
+             {
+               label: 'View',
+               icon: '👁️',
+               className: 'info',
+               onClick: (farmer) => farmer && handleViewFarmer(farmer)
+             },
+             {
+               label: 'Edit',
+               icon: '✏️',
+               className: 'primary',
+               onClick: (farmer) => farmer && handleEditFarmer(farmer)
+             },
+             {
+               label: 'KYC',
+               icon: '📋',
+               className: 'warning',
+               onClick: (farmer) => {
+                 setSelectedFarmer(farmer);
+                 setShowKYCModal(true);
+               }
+             }
+           ]}
         />
         ) : (
           <div className="farmer-registration-section">

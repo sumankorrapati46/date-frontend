@@ -1,7 +1,12 @@
 import React from 'react';
 import ActionDropdown from './ActionDropdown';
 
-const DataTable = ({ data, columns, onEdit, onDelete, onView, showDelete = false, customActions = [] }) => {
+const DataTable = ({ data, columns, onEdit, onDelete, onView, showDelete = false, customActions }) => {
+
+  
+  // Ensure customActions is always an array
+  const safeCustomActions = customActions && Array.isArray(customActions) ? customActions : [];
+  
   const getStatusClass = (status) => {
     switch (status?.toLowerCase()) {
       case 'approved':
@@ -68,18 +73,19 @@ const DataTable = ({ data, columns, onEdit, onDelete, onView, showDelete = false
       <table className="data-table">
         <thead>
           <tr>
-            {columns.map((column, index) => (
+            {columns && Array.isArray(columns) && columns.map((column, index) => (
               <th key={index}>{column.label}</th>
             ))}
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowIndex) => (
+          {data && Array.isArray(data) && data.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {columns.map((column, colIndex) => (
+              {columns && Array.isArray(columns) && columns.map((column, colIndex) => (
                 <td key={colIndex}>
                   {(() => {
+                    if (!row || typeof row !== 'object') return 'N/A';
                     const value = row[column.key];
                     
                     // Handle status fields with special styling
@@ -128,21 +134,24 @@ const DataTable = ({ data, columns, onEdit, onDelete, onView, showDelete = false
                 </td>
               ))}
               <td>
-                <ActionDropdown
-                  onEdit={onEdit ? () => onEdit(row) : undefined}
-                  onDelete={showDelete && onDelete ? () => onDelete(row) : undefined}
-                  onView={onView ? () => onView(row) : undefined}
-                  customActions={customActions.map(action => ({
-                    ...action,
-                    onClick: () => action.onClick(row)
-                  }))}
-                />
+                {row && (
+                  <ActionDropdown
+                    item={row}
+                    onEdit={onEdit ? () => onEdit(row) : undefined}
+                    onDelete={showDelete && onDelete ? () => onDelete(row) : undefined}
+                    onView={onView ? () => onView(row) : undefined}
+                    customActions={safeCustomActions.map(action => ({
+                      ...action,
+                      onClick: () => action.onClick(row)
+                    }))}
+                  />
+                )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {data.length === 0 && (
+      {(!data || !Array.isArray(data) || data.length === 0) && (
         <div className="no-data">
           <p>No data available</p>
         </div>

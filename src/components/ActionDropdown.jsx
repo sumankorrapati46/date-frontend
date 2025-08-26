@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const ActionDropdown = ({ actions, item }) => {
+const ActionDropdown = ({ actions, customActions, item, onEdit, onDelete, onView }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -19,11 +21,52 @@ const ActionDropdown = ({ actions, item }) => {
   }, []);
 
   const handleActionClick = (action) => {
-    if (action.onClick) {
+    if (action.onClick && item) {
       action.onClick(item);
     }
     setIsOpen(false);
   };
+
+  // Build actions array from all available sources
+  const allActions = [];
+  
+  // Add custom actions if provided
+  if (customActions && Array.isArray(customActions)) {
+    allActions.push(...customActions);
+  }
+  
+  // Add actions if provided
+  if (actions && Array.isArray(actions)) {
+    allActions.push(...actions);
+  }
+  
+  // Add built-in actions if provided
+  if (onView) {
+    allActions.push({
+      label: 'View',
+      icon: '👁️',
+      className: 'info',
+      onClick: () => onView(item)
+    });
+  }
+  
+  if (onEdit) {
+    allActions.push({
+      label: 'Edit',
+      icon: '✏️',
+      className: 'primary',
+      onClick: () => onEdit(item)
+    });
+  }
+  
+  if (onDelete) {
+    allActions.push({
+      label: 'Delete',
+      icon: '🗑️',
+      className: 'danger',
+      onClick: () => onDelete(item)
+    });
+  }
 
   return (
     <div className="action-dropdown" ref={dropdownRef}>
@@ -35,11 +78,11 @@ const ActionDropdown = ({ actions, item }) => {
         ⋯
       </button>
       
-      {isOpen && (
+      {isOpen && allActions.length > 0 && (
         <div className="dropdown-menu">
-          {actions.map((action, index) => {
+          {allActions.map((action, index) => {
             // Check if action should be shown based on condition
-            if (action.showCondition && !action.showCondition(item)) {
+            if (action.showCondition && item && !action.showCondition(item)) {
               return null;
             }
             
