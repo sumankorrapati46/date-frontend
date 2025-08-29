@@ -4,7 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { authAPI } from '../api/apiService';
 import { Link, useLocation } from 'react-router-dom';
-import '../styles/RegistrationForm.css';
+// Using shared minimalist styles from Login.css
+import '../styles/Registration.css';
 import logo from '../assets/rightlogo.png';
 
 // Update Yup schema for password validation
@@ -170,209 +171,104 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="reg-main-content">
-      {/* Left Info Panel */}
-      <div className="info-panel">
-        <div className="agri-stack-header">
-          <h1 className="agri-stack-title">
-            <span className="agri-text">Date</span>
-            <span className="agri-text">Agri</span>
-            <span className="leaf-icon">🌿</span>
-            <span className="stack-text">Stack</span>
-          </h1>
-          <h2 className="registry-title">India Farmer Registry</h2>
-        </div>
-        <div className="registry-info">
-          <h3>Digital Agristack Transaction Enterprises</h3>
-          <p className="help-desk">Empowering Agricultural Excellence</p>
-        </div>
-        {/* Enhanced Agricultural Content */}
-        <div className="agricultural-highlights">
-          <div className="highlight-item">
-            <span className="highlight-icon">🌾</span>
-            <div className="highlight-content">
-              <h4>Revolutionizing Indian Agriculture</h4>
-              <p>Connecting 140+ million farmers with cutting-edge digital solutions</p>
-            </div>
-          </div>
-          <div className="highlight-item">
-            <span className="highlight-icon">📱</span>
-            <div className="highlight-content">
-              <h4>Smart Farming Technology</h4>
-              <p>AI-powered crop monitoring and precision agriculture tools</p>
-            </div>
-          </div>
-          <div className="highlight-item">
-            <span className="highlight-icon">💰</span>
-            <div className="highlight-content">
-              <h4>Financial Inclusion</h4>
-              <p>Direct benefit transfers and digital payment solutions</p>
-            </div>
-          </div>
-          <div className="highlight-item">
-            <span className="highlight-icon">🌱</span>
-            <div className="highlight-content">
-              <h4>Sustainable Practices</h4>
-              <p>Promoting eco-friendly farming and climate-smart agriculture</p>
-            </div>
-          </div>
-          <div className="highlight-item">
-            <span className="highlight-icon">🏆</span>
-            <div className="highlight-content">
-              <h4>National Recognition</h4>
-              <p>Government of India's flagship agricultural digitization initiative</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Right Registration Form Card */}
-      <div className="reg-form-section">
-        <div className="reg-modern-form-card">
-          <div className="date-logo-section">
-            <img src={logo} alt="DATE Logo" className="date-logo" />
-            <div className="date-text">
-              <h3>Digital Agristack Transaction Enterprises</h3>
-              <p>Empowering Agricultural Excellence</p>
-            </div>
-          </div>
-          <div className="reg-form-header">
-            <h2 className="reg-form-title">Registration Form</h2>
-            <p className="reg-form-subtitle">Enter your details to get started</p>
-          </div>
-          <input type="hidden" {...register('role')} value={initialRole} />
-            {/* Optionally, show the role as read-only for user confirmation */}
-            {initialRole && (
-              <div className="reg-form-group">
-                <label>Role</label>
-                <input type="text" value={initialRole} readOnly className="reg-role-field" />
-              </div>
-            )}
-          <form onSubmit={handleSubmit(onSubmit)} className="reg-modern-form reg-form-grid">
+    <div className="login-page-container minimalist">
+      <div className="auth-wrapper">
+        <aside className="agri-highlights" aria-label="Agriculture highlights">
+          <h2 className="agri-title">Register to get started</h2>
+          <ul className="agri-list">
+            <li><span className="agri-emoji">✅</span><div><div className="agri-point">Simple onboarding</div><div className="agri-sub">Verify email with OTP in seconds</div></div></li>
+            <li><span className="agri-emoji">🛡️</span><div><div className="agri-point">Secure data</div><div className="agri-sub">Encrypted storage & verification</div></div></li>
+          </ul>
+        </aside>
 
-            <div className="reg-form-col">
-              <div className="reg-form-group">
-                <label> Name <span className="reg-required">*</span></label>
-                <input 
-                  type="text" 
-                  {...register('name')} 
-                  className={errors.name ? 'reg-error' : ''}
-                  placeholder="Enter your first name"
-                />
-                {errors.name && <span className="reg-error-message">{errors.name.message}</span>}
+        <div className="auth-card">
+          <div className="auth-brand">
+            <img src={logo} alt="DATE Logo" className="auth-logo" />
+            <div className="auth-title">Digital Agristack Transaction Enterprises</div>
+            <div className="auth-subtitle">Empowering Agricultural Excellence</div>
+          </div>
+
+          <div className="auth-field" style={{ marginTop: 6 }}>
+            <h2 style={{ margin: 0 }}>Registration Form</h2>
+            <p style={{ color: '#6b7280', margin: '6px 0 0' }}>Enter your details to get started</p>
+          </div>
+
+          <input type="hidden" {...register('role')} value={initialRole} />
+          {initialRole && (
+            <div className="auth-field">
+              <label>Role</label>
+              <input type="text" value={initialRole} readOnly />
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
+            <div className="form-grid-2">
+              <div className="auth-field">
+                <label>Name <span className="required">*</span></label>
+                <input type="text" {...register('name')} className={errors.name ? 'error' : ''} placeholder="Enter your first name" />
+                {errors.name && <div className="error">{errors.name.message}</div>}
               </div>
-              <div className="reg-form-group">
-                <label>Gender <span className="reg-required">*</span></label>
-                <select {...register('gender')} className={errors.gender ? 'reg-error' : ''}>
+
+              <div className="auth-field">
+                <label>Gender <span className="required">*</span></label>
+                <select {...register('gender')} className={errors.gender ? 'error' : ''}>
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
-                {errors.gender && <span className="reg-error-message">{errors.gender.message}</span>}
+                {errors.gender && <div className="error">{errors.gender.message}</div>}
               </div>
-              <div className="reg-form-group">
-                <label>Date of Birth <span className="reg-required">*</span></label>
-                <input
-                  type="date"
-                  {...register('dateOfBirth')}
-                  className={errors.dateOfBirth ? 'reg-error' : ''}
-                />
-                {errors.dateOfBirth && <span className="reg-error-message">{errors.dateOfBirth.message}</span>}
-              </div>
-            </div>
-            <div className="reg-form-col">
-              <div className="reg-form-group">
-                <label>Phone Number <span className="reg-required">*</span></label>
-                <input 
-                  type="text" 
-                  {...register('phoneNumber')} 
-                  className={errors.phoneNumber ? 'reg-error' : ''}
-                  placeholder="Enter 10-digit number"
-                />
-                {errors.phoneNumber && <span className="reg-error-message">{errors.phoneNumber.message}</span>}
-              </div>
-              <div className="reg-form-group">
-                <label>Email Address <span className="reg-required">*</span></label>
-                <input
-                  type="email"
-                  {...register('email')}
-                  value={emailValue}
-                  onChange={(e) => {
-                    setEmailValue(e.target.value);
-                    setOtpSent(false);
-                    setEmailVerified(false);
-                  }}
-                  className={errors.email ? 'reg-error' : ''}
-                  placeholder="Enter your email"
-                />
-                {errors.email && <span className="reg-error-message">{errors.email.message}</span>}
-               
-              </div>
-              <div className="reg-form-group">
-                <label>Password <span className="reg-required">*</span></label>
-                <input
-                  type="password"
-                  {...register('password')}
-                  className={errors.password ? 'reg-error' : ''}
-                  placeholder="Enter a strong password"
-                  autoComplete="new-password"
-                />
-                {errors.password && <span className="reg-error-message">{errors.password.message}</span>}
 
+              <div className="auth-field grid-span-2">
+                <label>Date of Birth <span className="required">*</span></label>
+                <input type="date" {...register('dateOfBirth')} className={errors.dateOfBirth ? 'error' : ''} />
+                {errors.dateOfBirth && <div className="error">{errors.dateOfBirth.message}</div>}
+              </div>
+
+              <div className="auth-field">
+                <label>Phone Number <span className="required">*</span></label>
+                <input type="text" {...register('phoneNumber')} className={errors.phoneNumber ? 'error' : ''} placeholder="Enter 10-digit number" />
+                {errors.phoneNumber && <div className="error">{errors.phoneNumber.message}</div>}
+              </div>
+
+              <div className="auth-field">
+                <label>Email Address <span className="required">*</span></label>
+                <input type="email" {...register('email')} value={emailValue} onChange={(e) => { setEmailValue(e.target.value); setOtpSent(false); setEmailVerified(false); }} className={errors.email ? 'error' : ''} placeholder="Enter your email" />
+                {errors.email && <div className="error">{errors.email.message}</div>}
+              </div>
+
+              <div className="auth-field grid-span-2">
+                <label>Password <span className="required">*</span></label>
+                <input type="password" {...register('password')} className={errors.password ? 'error' : ''} placeholder="Enter a strong password" autoComplete="new-password" />
+                {errors.password && <div className="error">{errors.password.message}</div>}
               </div>
             </div>
-             {/* Email Verification */}
-             <div className="reg-email-verification">
-                  {(!otpSent && !emailVerified) && (
-                    <button
-                      type="button"
-                      onClick={handleSendOTP}
-                      className="reg-otp-btn reg-primary"
-                    >
-                      Send OTP
-                    </button>
-                  )}
-                  {(otpSent && !emailVerified) && (
-                    <div className="reg-otp-container">
-                      <input
-                        type="text"
-                        placeholder="Enter OTP"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        className="reg-otp-input"
-                      />
-                      <div className="reg-otp-buttons">
-                        <button
-                          type="button"
-                          onClick={handleSendOTP}
-                          className="reg-otp-btn reg-secondary"
-                          disabled={resendTimer > 0}
-                        >
-                          {resendTimer > 0 ? `Resend (${resendTimer}s)` : 'Resend'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleVerifyOTP}
-                          className="reg-otp-btn reg-primary"
-                        >
-                          Verify
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  {emailVerified && (
-                    <div className="reg-verification-success">
-                      <span className="reg-success-icon">✓</span>
-                      Email Verified
-                    </div>
-                  )}
+
+            {/* Email Verification */}
+            {!otpSent && !emailVerified && (
+              <div className="auth-actions"><button type="button" onClick={handleSendOTP} className="auth-submit">Send OTP</button></div>
+            )}
+            {(otpSent && !emailVerified) && (
+              <div className="auth-field">
+                <label>Enter OTP</label>
+                <input type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} />
+                <div className="auth-actions" style={{ display: 'flex', gap: 10 }}>
+                  <button type="button" onClick={handleSendOTP} className="auth-secondary" disabled={resendTimer > 0}>
+                    {resendTimer > 0 ? `Resend (${resendTimer}s)` : 'Resend'}
+                  </button>
+                  <button type="button" onClick={handleVerifyOTP} className="auth-submit">Verify</button>
                 </div>
-            <div className="reg-form-actions reg-form-actions-full">
-              <button type="submit" className="reg-submit-btn">
-                Register Now ...
-              </button>
+              </div>
+            )}
+            {emailVerified && (
+              <div className="auth-field" style={{ color: '#166f3e', fontWeight: 700 }}>✓ Email Verified</div>
+            )}
+
+            <div className="auth-actions">
+              <button type="submit" className="auth-submit">Register Now ...</button>
             </div>
-            <div className="reg-login-link reg-form-actions-full">
+            <div className="auth-field" style={{ textAlign: 'center' }}>
               <h4>Already have an account? <Link to="/login">Sign In</Link></h4>
             </div>
           </form>

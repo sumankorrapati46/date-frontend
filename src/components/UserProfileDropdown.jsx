@@ -1,37 +1,38 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css';
  
-const UserProfileDropdown = ({ variant = 'default' }) => {
+const UserProfileDropdown = ({ variant = 'default', onShowChangePassword, onShowChangeUserId }) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [showChangePassword, setShowChangePassword] = useState(false);
-  const [showChangeUserId, setShowChangeUserId] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const dropdownRef = useRef(null);
  
-  // Password change form state
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
- 
-  // User ID change form state
-  const [userIdData, setUserIdData] = useState({
-    currentUserId: '',
-    newUserId: '',
-    confirmUserId: ''
-  });
- 
+  // Handle change password navigation
+  const handleChangePassword = () => {
+    setIsOpen(false);
+    navigate('/change-password-dashboard');
+  };
+
+  // Handle change user ID navigation
+  const handleChangeUserId = () => {
+    setIsOpen(false);
+    navigate('/change-userid-dashboard');
+  };
+
   // Notifications state
   const [notifications] = useState([
     { id: 1, type: 'info', message: 'New farmer registration pending approval', time: '2 minutes ago' },
     { id: 2, type: 'warning', message: 'KYC verification overdue for 3 farmers', time: '1 hour ago' },
     { id: 3, type: 'success', message: 'Employee assignment completed successfully', time: '3 hours ago' }
   ]);
+  
+  // Notification state for change password
+  const [notification, setNotification] = useState(null);
  
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -53,61 +54,7 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
     window.location.href = '/login';
   };
  
-  // Handle password change
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-   
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match!');
-      return;
-    }
- 
-    if (passwordData.newPassword.length < 6) {
-      alert('New password must be at least 6 characters long!');
-      return;
-    }
- 
-    try {
-      // Here you would typically make an API call to change password
-      alert('Password changed successfully!');
-      setShowChangePassword(false);
-      setPasswordData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
-    } catch (error) {
-      alert('Failed to change password. Please try again.');
-    }
-  };
- 
-  // Handle user ID change
-  const handleChangeUserId = async (e) => {
-    e.preventDefault();
-   
-    if (userIdData.newUserId !== userIdData.confirmUserId) {
-      alert('New User IDs do not match!');
-      return;
-    }
- 
-    if (userIdData.newUserId.length < 3) {
-      alert('New User ID must be at least 3 characters long!');
-      return;
-    }
- 
-    try {
-      // Here you would typically make an API call to change user ID
-      alert('User ID changed successfully!');
-      setShowChangeUserId(false);
-      setUserIdData({
-        currentUserId: '',
-        newUserId: '',
-        confirmUserId: ''
-      });
-    } catch (error) {
-      alert('Failed to change User ID. Please try again.');
-    }
-  };
+  
  
   // Get user initials for avatar
   const getInitials = (name) => {
@@ -164,53 +111,53 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
     return user?.email || `${user?.userName || 'user'}@date.com`;
   };
  
-  // Render compact variant (for mobile or minimal header)
+    // Render compact variant (for mobile or minimal header)
   if (variant === 'compact') {
     return (
-      <div className="user-profile-dropdown compact" ref={dropdownRef}>
+      <div className="user-profile-dropdown-component compact" ref={dropdownRef}>
         <div
-          className="user-profile-trigger compact"
+          className="user-profile-dropdown-trigger compact"
           onClick={() => setIsOpen(!isOpen)}
           title="User Menu"
         >
-          <div className="user-avatar-compact">
+          <div className="user-profile-dropdown-avatar-compact">
             {getAvatarInitials()}
           </div>
-          <i className={`fas fa-chevron-down dropdown-arrow ${isOpen ? 'rotated' : ''}`}></i>
+          <i className={`fas fa-chevron-down user-profile-dropdown-arrow ${isOpen ? 'rotated' : ''}`}></i>
         </div>
- 
+
         {isOpen && (
-          <div className="user-dropdown-menu compact">
-            <div className="dropdown-header">
-              <div className="user-avatar-large">
+          <div className="user-profile-dropdown-menu compact">
+            <div className="user-profile-dropdown-header">
+              <div className="user-profile-dropdown-avatar-large">
                 {getAvatarInitials()}
               </div>
-              <div className="user-details">
-                <span className="user-name-large">{getDisplayName()}</span>
-                <span className="user-role">{getDisplayRole()}</span>
-                <span className="user-email">{getUserEmail()}</span>
+              <div className="user-profile-dropdown-details">
+                <span className="user-profile-dropdown-name-large">{getDisplayName()}</span>
+                <span className="user-profile-dropdown-role">{getDisplayRole()}</span>
+                <span className="user-profile-dropdown-email">{getUserEmail()}</span>
               </div>
             </div>
            
-            <div className="dropdown-actions">
+            <div className="user-profile-dropdown-actions">
               <button
-                className="dropdown-action-btn"
-                onClick={() => setShowChangePassword(true)}
+                className="user-profile-dropdown-action-btn"
+                onClick={handleChangePassword}
               >
                 <i className="fas fa-key"></i>
                 Change Password
               </button>
              
               <button
-                className="dropdown-action-btn"
-                onClick={() => setShowChangeUserId(true)}
+                className="user-profile-dropdown-action-btn"
+                onClick={handleChangeUserId}
               >
                 <i className="fas fa-user-edit"></i>
                 Change User ID
               </button>
              
               <button
-                className="dropdown-action-btn logout"
+                className="user-profile-dropdown-action-btn logout"
                 onClick={handleLogout}
               >
                 <i className="fas fa-sign-out-alt"></i>
@@ -293,7 +240,7 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
             <div className="dropdown-actions">
               <button
                 className="dropdown-action-btn"
-                onClick={() => setShowChangePassword(true)}
+                onClick={handleChangePassword}
               >
                 <i className="fas fa-key"></i>
                 Change Password
@@ -301,7 +248,7 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
              
               <button
                 className="dropdown-action-btn"
-                onClick={() => setShowChangeUserId(true)}
+                onClick={handleChangeUserId}
               >
                 <i className="fas fa-user-edit"></i>
                 Change User ID
@@ -371,7 +318,7 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
           <div className="dropdown-actions">
             <button
               className="dropdown-action-btn"
-              onClick={() => setShowChangePassword(true)}
+              onClick={handleChangePassword}
             >
               <i className="fas fa-key"></i>
               Change Password
@@ -379,7 +326,7 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
            
             <button
               className="dropdown-action-btn"
-              onClick={() => setShowChangeUserId(true)}
+              onClick={handleChangeUserId}
             >
               <i className="fas fa-user-edit"></i>
               Change User ID
@@ -392,154 +339,6 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
               <i className="fas fa-sign-out-alt"></i>
               Logout
             </button>
-          </div>
-        </div>
-      )}
- 
-      {/* Change Password Modal */}
-      {showChangePassword && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>Change Password</h3>
-              <button
-                className="modal-close"
-                onClick={() => setShowChangePassword(false)}
-              >
-                <i className="fas fa-times"></i>
-              </button>
-            </div>
-           
-            <form onSubmit={handleChangePassword}>
-              <div className="form-group">
-                <label htmlFor="currentPassword">Current Password</label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  value={passwordData.currentPassword}
-                  onChange={(e) => setPasswordData(prev => ({
-                    ...prev,
-                    currentPassword: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-             
-              <div className="form-group">
-                <label htmlFor="newPassword">New Password</label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData(prev => ({
-                    ...prev,
-                    newPassword: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-             
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm New Password</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData(prev => ({
-                    ...prev,
-                    confirmPassword: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-             
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => setShowChangePassword(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary">
-                  Change Password
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
- 
-      {/* Change User ID Modal */}
-      {showChangeUserId && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>Change User ID</h3>
-              <button
-                className="modal-close"
-                onClick={() => setShowChangeUserId(false)}
-              >
-                <i className="fas fa-times"></i>
-              </button>
-            </div>
-           
-            <form onSubmit={handleChangeUserId}>
-              <div className="form-group">
-                <label htmlFor="currentUserId">Current User ID</label>
-                <input
-                  type="text"
-                  id="currentUserId"
-                  value={userIdData.currentUserId}
-                  onChange={(e) => setUserIdData(prev => ({
-                    ...prev,
-                    currentUserId: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-             
-              <div className="form-group">
-                <label htmlFor="newUserId">New User ID</label>
-                <input
-                  type="text"
-                  id="newUserId"
-                  value={userIdData.newUserId}
-                  onChange={(e) => setUserIdData(prev => ({
-                    ...prev,
-                    newUserId: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-             
-              <div className="form-group">
-                <label htmlFor="confirmUserId">Confirm New User ID</label>
-                <input
-                  type="text"
-                  id="confirmUserId"
-                  value={userIdData.confirmUserId}
-                  onChange={(e) => setUserIdData(prev => ({
-                    ...prev,
-                    confirmUserId: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-             
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => setShowChangeUserId(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary">
-                  Change User ID
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
@@ -641,6 +440,22 @@ const UserProfileDropdown = ({ variant = 'default' }) => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+ 
+      {/* Success Notification Toast */}
+      {notification && (
+        <div className={`notification-toast ${notification.type}`}>
+          <div className="notification-toast-content">
+            <i className={`fas fa-${notification.type === 'success' ? 'check-circle' : 'info-circle'}`}></i>
+            <span>{notification.message}</span>
+          </div>
+          <button
+            className="notification-toast-close"
+            onClick={() => setNotification(null)}
+          >
+            <i className="fas fa-times"></i>
+          </button>
         </div>
       )}
     </div>

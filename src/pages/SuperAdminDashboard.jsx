@@ -63,6 +63,22 @@ const SuperAdminDashboard = () => {
     }
   };
   
+  // Random greeting content
+  const greetingVariants = [
+    { title: '🌞 Good Morning!', subtitle: 'Wishing you a bright and productive day ahead filled with positivity.' },
+    { title: '🌸 Hello & Warm Greetings!', subtitle: 'May your day be filled with joy, success, and wonderful moments.' },
+    { title: '🙌 Hi There!', subtitle: 'Hope you’re doing well and everything is going smoothly on your end.' },
+    { title: '🌟 Season’s Greetings!', subtitle: 'Sending best wishes for peace, happiness, and good health.' },
+    { title: '🤝 Greetings of the Day!', subtitle: 'May this day bring you opportunities, growth, and good fortune.' }
+  ];
+
+  const [randomGreeting, setRandomGreeting] = useState(greetingVariants[0]);
+
+  useEffect(() => {
+    const idx = Math.floor(Math.random() * greetingVariants.length);
+    setRandomGreeting(greetingVariants[idx]);
+  }, []);
+  
   // Modal states
 
   const [showFarmerDetails, setShowFarmerDetails] = useState(false);
@@ -755,134 +771,7 @@ const SuperAdminDashboard = () => {
 
   return (
     <div className="dashboard">
-      {/* USER ICON - ALWAYS VISIBLE */}
-      <div style={{
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        background: '#15803d',
-        color: 'white',
-        padding: '12px 16px',
-        borderRadius: '8px',
-        zIndex: '10000',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        border: '2px solid #22c55e',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        boxShadow: '0 4px 12px rgba(21, 128, 61, 0.3)'
-      }}
-      onClick={toggleUserDropdown}
-      >
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          background: '#22c55e',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '16px',
-          fontWeight: 'bold'
-        }}>
-          {user?.name?.charAt(0) || 'U'}
-        </div>
-        <span>{user?.name || 'User'}</span>
-        <i className={`fas fa-chevron-down ${showUserDropdown ? 'fa-chevron-up' : ''}`}></i>
-      </div>
-      
-      {/* USER DROPDOWN MENU */}
-      {showUserDropdown && (
-        <div style={{
-          position: 'fixed',
-          top: '80px',
-          right: '20px',
-          background: '#ffffff',
-          border: '2px solid #15803d',
-          borderRadius: '12px',
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-          zIndex: '9999',
-          width: '280px',
-          padding: '16px'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            paddingBottom: '12px',
-            borderBottom: '1px solid #e5e7eb',
-            marginBottom: '12px'
-          }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              background: '#15803d',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              color: 'white'
-            }}>
-              {user?.name?.charAt(0) || 'U'}
-            </div>
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#1f2937' }}>
-                {user?.name || 'User'}
-              </div>
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                {user?.email || 'user@example.com'}
-              </div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button 
-              onClick={handleChangePassword}
-              style={{
-                background: '#f8fafc',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                padding: '12px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                color: '#374151'
-              }}
-            >
-              <i className="fas fa-key" style={{ color: '#15803d' }}></i>
-              Change Password
-            </button>
-            <button 
-              onClick={handleLogout}
-              style={{
-                background: '#fef2f2',
-                border: '1px solid #fecaca',
-                borderRadius: '8px',
-                padding: '12px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                color: '#dc2626'
-              }}
-            >
-              <i className="fas fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        </div>
-      )}
-      
-      {/* Top Bar */}
-      <div className="top-bar"></div>
-      
-      {/* Header */}
+      {/* Top Frame - Modern Professional Header */}
       <div className="dashboard-header">
         <div className="header-left">
           <div className="logo-section">
@@ -891,52 +780,22 @@ const SuperAdminDashboard = () => {
           </div>
         </div>
         <div className="header-right">
-          {/* TEST BUTTON - ALWAYS VISIBLE */}
-          <button 
-            style={{
-              background: '#15803d',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '8px',
-              marginRight: '10px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 'bold'
-            }}
-            onClick={toggleUserDropdown}
-          >
-            🔍 TEST USER MENU
-          </button>
-          
           <div className="user-profile-dropdown">
             <div className="user-profile-trigger" onClick={toggleUserDropdown}>
               <div className="user-avatar">
-                {user?.name?.charAt(0) || 'U'}
+                {user?.name?.charAt(0) || 'S'}
               </div>
-              <span className="user-email">{user?.email || 'user@example.com'}</span>
+              <span className="user-email">{user?.email || 'super@admin.com'}</span>
               <i className={`fas fa-chevron-down dropdown-arrow ${showUserDropdown ? 'rotated' : ''}`}></i>
             </div>
-            <div className="user-dropdown-menu" style={{ 
-              display: showUserDropdown ? 'block' : 'none',
-              position: 'absolute',
-              top: '100%',
-              right: '0',
-              width: '280px',
-              background: '#ffffff',
-              border: '2px solid #15803d',
-              borderRadius: '12px',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-              zIndex: '9999',
-              marginTop: '8px'
-            }}>
+            <div className={`user-dropdown-menu ${showUserDropdown ? 'show' : ''}`}>
               <div className="dropdown-header">
                 <div className="user-avatar-large">
-                  {user?.name?.charAt(0) || 'U'}
+                  {user?.name?.charAt(0) || 'S'}
                 </div>
                 <div className="user-details">
-                  <div className="user-name-large">{user?.name || 'User'}</div>
-                  <div className="user-email">{user?.email || 'user@example.com'}</div>
+                  <div className="user-name-large">{user?.name || 'Super Admin'}</div>
+                  <div className="user-email">{user?.email || 'super@admin.com'}</div>
                 </div>
               </div>
               <div className="dropdown-actions">
@@ -957,11 +816,8 @@ const SuperAdminDashboard = () => {
       {/* Sidebar */}
       <div className="dashboard-sidebar">
         <div className="sidebar-header">
-          <div className="logo">
-            <span className="logo-text">DATE</span>
-            <span className="logo-subtitle">Digital Agristack</span>
-          </div>
-          <p>Super Admin Dashboard</p>
+          <h2 className="sidebar-welcome">Welcome!!!</h2>
+          <div className="sidebar-role">Super Admin</div>
         </div>
         
         <div className="sidebar-nav">
@@ -979,7 +835,6 @@ const SuperAdminDashboard = () => {
           >
             <i className="fas fa-user-plus"></i>
             <span>Registration</span>
-            <i className="fas fa-chevron-down dropdown-arrow"></i>
           </div>
           
           <div 
@@ -988,7 +843,6 @@ const SuperAdminDashboard = () => {
           >
             <i className="fas fa-users"></i>
             <span>Farmers</span>
-            <i className="fas fa-chevron-down dropdown-arrow"></i>
           </div>
           
           <div 
@@ -997,7 +851,6 @@ const SuperAdminDashboard = () => {
           >
             <i className="fas fa-user-tie"></i>
             <span>Employees</span>
-            <i className="fas fa-chevron-down dropdown-arrow"></i>
           </div>
 
           <div 
@@ -1012,54 +865,30 @@ const SuperAdminDashboard = () => {
 
       {/* Main Content */}
       <div className="dashboard-main">
-        {/* Top Header Bar */}
-        <div className="top-header"></div>
-
-        {/* Dashboard Header */}
-        <div className="dashboard-header">
-          <div className="header-left">
-            <div className="greeting-section">
-              <h2 className="greeting-text">{getGreeting()}, {user?.name || 'Super Admin'}! 👋</h2>
-              <p className="greeting-time">{new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}</p>
-            </div>
-            {!user && (
-              <div style={{ 
-                background: '#fef3c7', 
-                color: '#92400e', 
-                padding: '8px 12px', 
-                borderRadius: '6px', 
-                fontSize: '14px',
-                marginTop: '8px'
-              }}>
-                ⚠️ No user data found. Using default Super Admin profile.
-            </div>
-          )}
-            <h1 className="header-title">Super Admin Dashboard</h1>
-            <p className="header-subtitle">Manage your agricultural platform</p>
-            </div>
-          <div className="header-right">
-            <UserProfileDropdown />
-        </div>
-      </div>
-
-        {/* Welcome Section */}
-        <div className="welcome-section">
-          <h1 className="welcome-title">Welcome to DATE Digital Agristack!</h1>
-          <p className="welcome-subtitle">
-            Empowering your agricultural journey with data-driven insights and seamless management. 
-            Explore your dashboard below.
-          </p>
-    </div>
-
         {/* Dashboard Content */}
-    <div className="dashboard-content">
+        <div className="dashboard-content">
           {activeTab === 'dashboard' && (
             <>
+              {/* Greeting Banner - Only for Dashboard Overview */}
+              <div className="greeting-banner">
+                <div className="greeting-left">
+                  <div className="greeting-title">{randomGreeting.title}</div>
+                  <div className="greeting-subtitle">{randomGreeting.subtitle}</div>
+                </div>
+                <div className="greeting-right">
+                  <span className="greeting-date">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+              </div>
+              
+              {/* Welcome Section - Only for Dashboard Overview */}
+              <div className="welcome-section">
+                <h1 className="welcome-title">Welcome to DATE Digital Agristack!</h1>
+                <p className="welcome-subtitle">
+                  Empowering your agricultural journey with data-driven insights and seamless management. 
+                  Explore your dashboard below.
+                </p>
+              </div>
+
               {/* Dashboard Overview */}
               <div className="overview-section">
                 <div className="overview-header">
@@ -1074,9 +903,9 @@ const SuperAdminDashboard = () => {
                       <i className="fas fa-sync-alt"></i>
                       Refresh
                     </button>
-                    <button className="action-btn secondary">Today</button>
-                    <button className="action-btn secondary">This Month</button>
-                    <button className="action-btn primary">This Year</button>
+                    <button className="action-btn today">Today</button>
+                    <button className="action-btn month">This Month</button>
+                    <button className="action-btn year">This Year</button>
                   </div>
                 </div>
 
@@ -1086,7 +915,7 @@ const SuperAdminDashboard = () => {
                     <div className="stats-icon farmers">
                       <i className="fas fa-users"></i>
                     </div>
-                    <div className="stats-title">Farmers</div>
+                    <div className="stats-title">FARMERS</div>
                     <div className="stats-value">{stats.totalFarmers}</div>
                     <div className="stats-change positive">
                       <i className="fas fa-arrow-up"></i>
@@ -1098,7 +927,7 @@ const SuperAdminDashboard = () => {
                     <div className="stats-icon employees">
                       <i className="fas fa-user-tie"></i>
                     </div>
-                    <div className="stats-title">Employees</div>
+                    <div className="stats-title">EMPLOYEES</div>
                     <div className="stats-value">{stats.totalEmployees}</div>
                     <div className="stats-change negative">
                       <i className="fas fa-arrow-down"></i>
@@ -1170,11 +999,10 @@ const SuperAdminDashboard = () => {
                         <i className="fas fa-chart-bar"></i>
                         Generate Report
                       </button>
-
                     </div>
-        </div>
-      </div>
-    </div>
+                  </div>
+                </div>
+              </div>
             </>
           )}
 
@@ -1330,210 +1158,209 @@ const SuperAdminDashboard = () => {
                     </div>
                   </div>
 
-      {/* Enhanced Filters */}
-      <div className="filters-section">
-        <div className="filter-group">
-          <label className="filter-label">State</label>
-          <select 
-            value={filters.state} 
-            onChange={(e) => setFilters(prev => ({ ...prev, state: e.target.value }))}
-            className="filter-select"
-          >
-            <option value="">All States</option>
-            <option value="Telangana">Telangana</option>
-            <option value="Andhrapradesh">Andhrapradesh</option>
-            <option value="Maharashtra">Maharashtra</option>
-            <option value="Gujarat">Gujarat</option>
-            <option value="Punjab">Punjab</option>
-            <option value="Uttar Pradesh">Uttar Pradesh</option>
-            <option value="Tamil Nadu">Tamil Nadu</option>
-          </select>
-        </div>
-        
-        <div className="filter-group">
-          <label className="filter-label">District</label>
-          <select 
-            value={filters.district} 
-            onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
-            className="filter-select"
-          >
-            <option value="">All Districts</option>
-            <option value="Karimnagar">Karimnagar</option>
-            <option value="rangareddy">Rangareddy</option>
-            <option value="kadapa">Kadapa</option>
-            <option value="Kadapa">Kadapa</option>
-            <option value="kadpaa">Kadpaa</option>
-            <option value="Kuppam">Kuppam</option>
-            <option value="Pune">Pune</option>
-            <option value="Ahmedabad">Ahmedabad</option>
-            <option value="Amritsar">Amritsar</option>
-            <option value="Lucknow">Lucknow</option>
-            <option value="Chennai">Chennai</option>
-          </select>
-        </div>
-        
-        <div className="filter-group">
-          <label className="filter-label">KYC Status</label>
-          <select 
-            value={filters.kycStatus} 
-            onChange={(e) => setFilters(prev => ({ ...prev, kycStatus: e.target.value }))}
-            className="filter-select"
-          >
-            <option value="">All KYC Status</option>
-            <option value="APPROVED">Approved</option>
-            <option value="PENDING">Pending</option>
-            <option value="NOT_STARTED">Not Started</option>
-            <option value="REFER_BACK">Refer Back</option>
-            <option value="REJECTED">Rejected</option>
-          </select>
-        </div>
-        
-        <div className="filter-group">
-          <label className="filter-label">Assignment Status</label>
-          <select 
-            value={filters.assignmentStatus} 
-            onChange={(e) => setFilters(prev => ({ ...prev, assignmentStatus: e.target.value }))}
-            className="filter-select"
-          >
-            <option value="">All Assignment Status</option>
-            <option value="ASSIGNED">Assigned</option>
-            <option value="UNASSIGNED">Unassigned</option>
-          </select>
-        </div>
-        
-        <div className="filter-group">
-          <label className="filter-label">Assigned Employee</label>
-          <select 
-            value={filters.employeeFilter} 
-            onChange={(e) => {
-              console.log('🔍 Employee filter changed to:', e.target.value);
-              setFilters(prev => ({ ...prev, employeeFilter: e.target.value }));
-            }}
-            className="filter-select"
-          >
-            <option value="">All Employees</option>
-            {employees.map(emp => {
-              console.log('🔍 Employee in dropdown:', emp);
-              return (
-                <option key={emp.id} value={emp.name}>{emp.name}</option>
-              );
-            })}
-          </select>
-        </div>
-        
-        <div className="filter-actions">
-          <button 
-            className="filter-btn-clear"
-            onClick={() => setFilters({
-              state: '',
-              district: '',
-              region: '',
-              kycStatus: '',
-              assignmentStatus: '',
-              employeeFilter: ''
-            })}
-          >
-            <i className="fas fa-times"></i>
-            Clear Filters
-          </button>
-        </div>
-      </div>
+                  {/* Enhanced Filters */}
+                  <div className="filters-section">
+                    <div className="filter-group">
+                      <label className="filter-label">State</label>
+                      <select 
+                        value={filters.state} 
+                        onChange={(e) => setFilters(prev => ({ ...prev, state: e.target.value }))}
+                        className="filter-select"
+                      >
+                        <option value="">All States</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Andhrapradesh">Andhrapradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                      </select>
+                    </div>
+                    
+                    <div className="filter-group">
+                      <label className="filter-label">District</label>
+                      <select 
+                        value={filters.district} 
+                        onChange={(e) => setFilters(prev => ({ ...prev, district: e.target.value }))}
+                        className="filter-select"
+                      >
+                        <option value="">All Districts</option>
+                        <option value="Karimnagar">Karimnagar</option>
+                        <option value="rangareddy">Rangareddy</option>
+                        <option value="kadapa">Kadapa</option>
+                        <option value="Kadapa">Kadapa</option>
+                        <option value="kadpaa">Kadpaa</option>
+                        <option value="Kuppam">Kuppam</option>
+                        <option value="Pune">Pune</option>
+                        <option value="Ahmedabad">Ahmedabad</option>
+                        <option value="Amritsar">Amritsar</option>
+                        <option value="Lucknow">Lucknow</option>
+                        <option value="Chennai">Chennai</option>
+                      </select>
+                    </div>
+                    
+                    <div className="filter-group">
+                      <label className="filter-label">KYC Status</label>
+                      <select 
+                        value={filters.kycStatus} 
+                        onChange={(e) => setFilters(prev => ({ ...prev, kycStatus: e.target.value }))}
+                        className="filter-select"
+                      >
+                        <option value="">All KYC Status</option>
+                        <option value="APPROVED">Approved</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="NOT_STARTED">Not Started</option>
+                        <option value="REFER_BACK">Refer Back</option>
+                        <option value="REJECTED">Rejected</option>
+                      </select>
+                    </div>
+                    
+                    <div className="filter-group">
+                      <label className="filter-label">Assignment Status</label>
+                      <select 
+                        value={filters.assignmentStatus} 
+                        onChange={(e) => setFilters(prev => ({ ...prev, assignmentStatus: e.target.value }))}
+                        className="filter-select"
+                      >
+                        <option value="">All Assignment Status</option>
+                        <option value="ASSIGNED">Assigned</option>
+                        <option value="UNASSIGNED">Unassigned</option>
+                      </select>
+                    </div>
+                    
+                    <div className="filter-group">
+                      <label className="filter-label">Assigned Employee</label>
+                      <select 
+                        value={filters.employeeFilter} 
+                        onChange={(e) => {
+                          console.log('🔍 Employee filter changed to:', e.target.value);
+                          setFilters(prev => ({ ...prev, employeeFilter: e.target.value }));
+                        }}
+                        className="filter-select"
+                      >
+                        <option value="">All Employees</option>
+                        {employees.map(emp => {
+                          console.log('🔍 Employee in dropdown:', emp);
+                          return (
+                            <option key={emp.id} value={emp.name}>{emp.name}</option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                    
+                    <div className="filter-actions">
+                      <button 
+                        className="filter-btn-clear"
+                        onClick={() => setFilters({
+                          state: '',
+                          district: '',
+                          region: '',
+                          kycStatus: '',
+                          assignmentStatus: '',
+                          employeeFilter: ''
+                        })}
+                      >
+                        <i className="fas fa-times"></i>
+                        Clear Filters
+                      </button>
+                    </div>
+                  </div>
 
-      {!showFarmerForm ? (
-      <DataTable
-        data={getFilteredFarmers()}
-        columns={[
-          { key: 'name', label: 'Name' },
-          { key: 'contactNumber', label: 'Phone' },
-          { key: 'state', label: 'State' },
-          { key: 'district', label: 'District' },
-          { 
-            key: 'kycStatus', 
-            label: 'KYC Status',
-            render: (value) => {
-              if (!value) return 'NOT_STARTED';
-              if (value === 'PENDING' || value === 'pending') return 'PENDING';
-              if (value === 'APPROVED' || value === 'approved') return 'APPROVED';
-              if (value === 'REFER_BACK' || value === 'refer_back') return 'REFER_BACK';
-              if (value === 'REJECTED' || value === 'rejected') return 'REJECTED';
-              if (value === 'NOT_STARTED' || value === 'not_started') return 'NOT_STARTED';
-              return value.toUpperCase();
-            }
-          },
-          { key: 'assignedEmployee', label: 'Assigned Employee' }
-        ]}
-        customActions={[
-          {
-            label: 'View',
-            className: 'info',
-            onClick: handleViewFarmer
-          },
-          {
-            label: 'Edit',
-            className: 'secondary',
-            onClick: handleEditFarmer
-          },
-          {
-            label: 'Approve',
-            className: 'approve',
-            onClick: (farmer) => handleApproveKYC(farmer.id)
-          },
-          {
-            label: 'Reject',
-            className: 'reject',
-            onClick: (farmer) => handleRejectKYC(farmer.id)
-          },
-          {
-            label: 'Delete',
-            className: 'danger',
-            onClick: (farmer) => handleDelete(farmer, 'farmer')
-          }
-        ]}
-      />
-      ) : (
-        <div className="employee-registration-section">
-          <div className="overview-header">
-            <h2 className="overview-title">Add New Farmer</h2>
-            <p className="overview-description">
-              Register a new farmer in the system.
-            </p>
-            <div className="overview-actions">
-              <button 
-                className="action-btn secondary" 
-                onClick={() => setShowFarmerForm(false)}
-              >
-                <i className="fas fa-arrow-left"></i>
-                Back to Farmers
-              </button>
-            </div>
-          </div>
-          <FarmerRegistrationForm 
-            isInDashboard={true}
-            onClose={() => setShowFarmerForm(false)}
-            onSubmit={async (farmerData) => {
-              try {
-                if (editingFarmer) {
-                  const updatedFarmer = await farmersAPI.updateFarmer(editingFarmer.id, farmerData);
-                  setFarmers(prev => prev.map(farmer => 
-                    farmer.id === editingFarmer.id ? updatedFarmer : farmer
-                  ));
-                  alert('Farmer updated successfully!');
-                } else {
-                  const newFarmer = await farmersAPI.createFarmer(farmerData);
-                  setFarmers(prev => [...prev, newFarmer]);
-                  alert('Farmer created successfully!');
-                }
-                setShowFarmerForm(false);
-                setEditingFarmer(null);
-              } catch (error) {
-                console.error('Error saving farmer:', error);
-                alert('Failed to save farmer. Please try again.');
-              }
-            }}
-          />
-        </div>
-      )}
-
+                  {!showFarmerForm ? (
+                    <DataTable
+                      data={getFilteredFarmers()}
+                      columns={[
+                        { key: 'name', label: 'Name' },
+                        { key: 'contactNumber', label: 'Phone' },
+                        { key: 'state', label: 'State' },
+                        { key: 'district', label: 'District' },
+                        { 
+                          key: 'kycStatus', 
+                          label: 'KYC Status',
+                          render: (value) => {
+                            if (!value) return 'NOT_STARTED';
+                            if (value === 'PENDING' || value === 'pending') return 'PENDING';
+                            if (value === 'APPROVED' || value === 'approved') return 'APPROVED';
+                            if (value === 'REFER_BACK' || value === 'refer_back') return 'REFER_BACK';
+                            if (value === 'REJECTED' || value === 'rejected') return 'REJECTED';
+                            if (value === 'NOT_STARTED' || value === 'not_started') return 'NOT_STARTED';
+                            return value.toUpperCase();
+                          }
+                        },
+                        { key: 'assignedEmployee', label: 'Assigned Employee' }
+                      ]}
+                      customActions={[
+                        {
+                          label: 'View',
+                          className: 'info',
+                          onClick: handleViewFarmer
+                        },
+                        {
+                          label: 'Edit',
+                          className: 'secondary',
+                          onClick: handleEditFarmer
+                        },
+                        {
+                          label: 'Approve',
+                          className: 'approve',
+                          onClick: (farmer) => handleApproveKYC(farmer.id)
+                        },
+                        {
+                          label: 'Reject',
+                          className: 'reject',
+                          onClick: (farmer) => handleRejectKYC(farmer.id)
+                        },
+                        {
+                          label: 'Delete',
+                          className: 'danger',
+                          onClick: (farmer) => handleDelete(farmer, 'farmer')
+                        }
+                      ]}
+                    />
+                  ) : (
+                    <div className="employee-registration-section">
+                      <div className="overview-header">
+                        <h2 className="overview-title">Add New Farmer</h2>
+                        <p className="overview-description">
+                          Register a new farmer in the system.
+                        </p>
+                        <div className="overview-actions">
+                          <button 
+                            className="action-btn secondary" 
+                            onClick={() => setShowFarmerForm(false)}
+                          >
+                            <i className="fas fa-arrow-left"></i>
+                            Back to Farmers
+                          </button>
+                        </div>
+                      </div>
+                      <FarmerRegistrationForm 
+                        isInDashboard={true}
+                        onClose={() => setShowFarmerForm(false)}
+                        onSubmit={async (farmerData) => {
+                          try {
+                            if (editingFarmer) {
+                              const updatedFarmer = await farmersAPI.updateFarmer(editingFarmer.id, farmerData);
+                              setFarmers(prev => prev.map(farmer => 
+                                farmer.id === editingFarmer.id ? updatedFarmer : farmer
+                              ));
+                              alert('Farmer updated successfully!');
+                            } else {
+                              const newFarmer = await farmersAPI.createFarmer(farmerData);
+                              setFarmers(prev => [...prev, newFarmer]);
+                              alert('Farmer created successfully!');
+                            }
+                            setShowFarmerForm(false);
+                            setEditingFarmer(null);
+                          } catch (error) {
+                            console.error('Error saving farmer:', error);
+                            alert('Failed to save farmer. Please try again.');
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               ) : null}
 
@@ -1562,148 +1389,148 @@ const SuperAdminDashboard = () => {
                 <>
                   {!viewingEmployee ? (
                     <>
-                  <div className="overview-header">
-                    <h2 className="overview-title">Employee Management</h2>
-                    <p className="overview-description">
-                      Manage employee profiles and assignments.
-                    </p>
-                    <div className="overview-actions">
-                      <button className="action-btn primary" onClick={handleAddEmployee}>
-                        <i className="fas fa-plus"></i>
-                        Add Employee
-          </button>
-        </div>
-      </div>
+                      <div className="overview-header">
+                        <h2 className="overview-title">Employee Management</h2>
+                        <p className="overview-description">
+                          Manage employee profiles and assignments.
+                        </p>
+                        <div className="overview-actions">
+                          <button className="action-btn primary" onClick={handleAddEmployee}>
+                            <i className="fas fa-plus"></i>
+                            Add Employee
+                          </button>
+                        </div>
+                      </div>
 
-                  {/* Employee Filters */}
-                  <div className="filters-section">
-                    <div className="filter-group">
-                      <label className="filter-label">Status</label>
-                      <select 
-                        value={employeeFilters.status} 
-                        onChange={(e) => setEmployeeFilters(prev => ({ ...prev, status: e.target.value }))}
-                        className="filter-select"
-                      >
-                        <option value="">All Status</option>
-                        <option value="ACTIVE">Active</option>
-                        <option value="INACTIVE">Inactive</option>
-                        <option value="PENDING">Pending</option>
-                      </select>
-                    </div>
-                    
-                    <div className="filter-group">
-                      <label className="filter-label">Role</label>
-                      <select 
-                        value={employeeFilters.role} 
-                        onChange={(e) => setEmployeeFilters(prev => ({ ...prev, role: e.target.value }))}
-                        className="filter-select"
-                      >
-                        <option value="">All Roles</option>
-                        <option value="employee">Employee</option>
-                        <option value="admin">Admin</option>
-                        <option value="super_admin">Super Admin</option>
-                      </select>
-                    </div>
-                    
-                    <div className="filter-group">
-                      <label className="filter-label">Designation</label>
-                      <select 
-                        value={employeeFilters.designation} 
-                        onChange={(e) => setEmployeeFilters(prev => ({ ...prev, designation: e.target.value }))}
-                        className="filter-select"
-                      >
-                        <option value="">All Designations</option>
-                        <option value="KYC Officer">KYC Officer</option>
-                        <option value="Field Officer">Field Officer</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Supervisor">Supervisor</option>
-                      </select>
-                    </div>
-                    
-                    <div className="filter-group">
-                      <label className="filter-label">State</label>
-                      <select 
-                        value={employeeFilters.state} 
-                        onChange={(e) => setEmployeeFilters(prev => ({ ...prev, state: e.target.value }))}
-                        className="filter-select"
-                      >
-                        <option value="">All States</option>
-                        <option value="Telangana">Telangana</option>
-                        <option value="Andhrapradesh">Andhrapradesh</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Gujarat">Gujarat</option>
-                        <option value="Punjab">Punjab</option>
-                        <option value="Uttar Pradesh">Uttar Pradesh</option>
-                        <option value="Tamil Nadu">Tamil Nadu</option>
-                      </select>
-                    </div>
-                    
-                    <div className="filter-group">
-                      <label className="filter-label">District</label>
-                      <select 
-                        value={employeeFilters.district} 
-                        onChange={(e) => setEmployeeFilters(prev => ({ ...prev, district: e.target.value }))}
-                        className="filter-select"
-                      >
-                        <option value="">All Districts</option>
-                        <option value="Karimnagar">Karimnagar</option>
-                        <option value="rangareddy">Rangareddy</option>
-                        <option value="kadapa">Kadapa</option>
-                        <option value="Kadapa">Kadapa</option>
-                        <option value="kadpaa">Kadpaa</option>
-                        <option value="Kuppam">Kuppam</option>
-                        <option value="Pune">Pune</option>
-                        <option value="Ahmedabad">Ahmedabad</option>
-                        <option value="Amritsar">Amritsar</option>
-                        <option value="Lucknow">Lucknow</option>
-                        <option value="Chennai">Chennai</option>
-                      </select>
-                    </div>
-                    
-                    <div className="filter-actions">
-                      <button 
-                        className="filter-btn-clear"
-                        onClick={() => setEmployeeFilters({
-                          status: '',
-                          role: '',
-                          designation: '',
-                          state: '',
-                          district: ''
-                        })}
-                      >
-                        <i className="fas fa-times"></i>
-                        Clear Filters
-                      </button>
-                    </div>
-                  </div>
+                      {/* Employee Filters */}
+                      <div className="filters-section">
+                        <div className="filter-group">
+                          <label className="filter-label">Status</label>
+                          <select 
+                            value={employeeFilters.status} 
+                            onChange={(e) => setEmployeeFilters(prev => ({ ...prev, status: e.target.value }))}
+                            className="filter-select"
+                          >
+                            <option value="">All Status</option>
+                            <option value="ACTIVE">Active</option>
+                            <option value="INACTIVE">Inactive</option>
+                            <option value="PENDING">Pending</option>
+                          </select>
+                        </div>
+                        
+                        <div className="filter-group">
+                          <label className="filter-label">Role</label>
+                          <select 
+                            value={employeeFilters.role} 
+                            onChange={(e) => setEmployeeFilters(prev => ({ ...prev, role: e.target.value }))}
+                            className="filter-select"
+                          >
+                            <option value="">All Roles</option>
+                            <option value="employee">Employee</option>
+                            <option value="admin">Admin</option>
+                            <option value="super_admin">Super Admin</option>
+                          </select>
+                        </div>
+                        
+                        <div className="filter-group">
+                          <label className="filter-label">Designation</label>
+                          <select 
+                            value={employeeFilters.designation} 
+                            onChange={(e) => setEmployeeFilters(prev => ({ ...prev, designation: e.target.value }))}
+                            className="filter-select"
+                          >
+                            <option value="">All Designations</option>
+                            <option value="KYC Officer">KYC Officer</option>
+                            <option value="Field Officer">Field Officer</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Supervisor">Supervisor</option>
+                          </select>
+                        </div>
+                        
+                        <div className="filter-group">
+                          <label className="filter-label">State</label>
+                          <select 
+                            value={employeeFilters.state} 
+                            onChange={(e) => setEmployeeFilters(prev => ({ ...prev, state: e.target.value }))}
+                            className="filter-select"
+                          >
+                            <option value="">All States</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Andhrapradesh">Andhrapradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                          </select>
+                        </div>
+                        
+                        <div className="filter-group">
+                          <label className="filter-label">District</label>
+                          <select 
+                            value={employeeFilters.district} 
+                            onChange={(e) => setEmployeeFilters(prev => ({ ...prev, district: e.target.value }))}
+                            className="filter-select"
+                          >
+                            <option value="">All Districts</option>
+                            <option value="Karimnagar">Karimnagar</option>
+                            <option value="rangareddy">Rangareddy</option>
+                            <option value="kadapa">Kadapa</option>
+                            <option value="Kadapa">Kadapa</option>
+                            <option value="kadpaa">Kadpaa</option>
+                            <option value="Kuppam">Kuppam</option>
+                            <option value="Pune">Pune</option>
+                            <option value="Ahmedabad">Ahmedabad</option>
+                            <option value="Amritsar">Amritsar</option>
+                            <option value="Lucknow">Lucknow</option>
+                            <option value="Chennai">Chennai</option>
+                          </select>
+                        </div>
+                        
+                        <div className="filter-actions">
+                          <button 
+                            className="filter-btn-clear"
+                            onClick={() => setEmployeeFilters({
+                              status: '',
+                              role: '',
+                              designation: '',
+                              state: '',
+                              district: ''
+                            })}
+                          >
+                            <i className="fas fa-times"></i>
+                            Clear Filters
+                          </button>
+                        </div>
+                      </div>
 
-                  <DataTable
-                    data={getFilteredEmployees()}
-                    columns={[
-                      { key: 'name', label: 'Name' },
-                      { key: 'contactNumber', label: 'Phone' },
-                      { key: 'email', label: 'Email' },
-                      { key: 'status', label: 'Status' },
-                      { key: 'role', label: 'Role' }
-                    ]}
-                    customActions={[
-                      {
-                        label: 'View',
-                        className: 'info',
-                        onClick: handleViewEmployee
-                      },
-                      {
-                        label: 'Edit',
-                        className: 'secondary',
-                        onClick: handleEditEmployee
-                      },
-                      {
-                        label: 'Delete',
-                        className: 'danger',
-                        onClick: (employee) => handleDelete(employee, 'employee')
-                      }
-                    ]}
-                  />
+                      <DataTable
+                        data={getFilteredEmployees()}
+                        columns={[
+                          { key: 'name', label: 'Name' },
+                          { key: 'contactNumber', label: 'Phone' },
+                          { key: 'email', label: 'Email' },
+                          { key: 'status', label: 'Status' },
+                          { key: 'role', label: 'Role' }
+                        ]}
+                        customActions={[
+                          {
+                            label: 'View',
+                            className: 'info',
+                            onClick: handleViewEmployee
+                          },
+                          {
+                            label: 'Edit',
+                            className: 'secondary',
+                            onClick: handleEditEmployee
+                          },
+                          {
+                            label: 'Delete',
+                            className: 'danger',
+                            onClick: (employee) => handleDelete(employee, 'employee')
+                          }
+                        ]}
+                      />
                     </>
                   ) : (
                     <ViewEmployee 
@@ -1721,15 +1548,15 @@ const SuperAdminDashboard = () => {
                       Register a new employee in the system.
                     </p>
                     <div className="overview-actions">
-        <button 
+                      <button 
                         className="action-btn secondary" 
                         onClick={() => setShowEmployeeRegistration(false)}
                       >
                         <i className="fas fa-arrow-left"></i>
                         Back to Employees
-        </button>
-      </div>
-      </div>
+                      </button>
+                    </div>
+                  </div>
 
                   <EmployeeRegistrationForm 
                     isInDashboard={true}
@@ -1758,49 +1585,42 @@ const SuperAdminDashboard = () => {
       </div>
 
       {/* Modals */}
-
-             {showAssignmentModal && (() => {
-         console.log('=== RENDERING ASSIGNMENT MODAL ===');
-         console.log('showAssignmentModal:', showAssignmentModal);
-         console.log('Employees state:', employees);
-         console.log('Employees length:', employees?.length || 0);
-         return (
-        <AssignmentModal 
-             farmers={farmers.filter(f => {
-               // Check if farmer is unassigned based on backend data structure
-               return !f.assignedEmployee || 
-                      f.assignedEmployee === 'Not Assigned' || 
-                      f.assignedEmployee === null ||
-                      f.assignedEmployee === undefined ||
-                      f.assignedEmployee === '';
-             })}
-             employees={(() => {
-               console.log('=== PASSING EMPLOYEES TO MODAL ===');
-               console.log('Employees array:', employees);
-               console.log('Employees type:', typeof employees);
-               console.log('Employees length:', employees?.length || 0);
-               console.log('Employees is array:', Array.isArray(employees));
-               if (employees && employees.length > 0) {
-                 console.log('First employee:', employees[0]);
-                 console.log('First employee name:', employees[0]?.name);
-                 console.log('First employee designation:', employees[0]?.designation);
-                 console.log('All employee names:', employees.map(emp => emp?.name));
-               } else {
-                 console.log('No employees found or employees is empty/null');
-               }
-               return employees;
-             })()}
-          onClose={() => setShowAssignmentModal(false)}
-             onAssign={handleAssignFarmers}
-           />
-         );
+      {showAssignmentModal && (() => {
+        console.log('=== RENDERING ASSIGNMENT MODAL ===');
+        console.log('showAssignmentModal:', showAssignmentModal);
+        console.log('Employees state:', employees);
+        console.log('Employees length:', employees?.length || 0);
+        return (
+          <AssignmentModal 
+            farmers={farmers.filter(f => {
+              // Check if farmer is unassigned based on backend data structure
+              return !f.assignedEmployee || 
+                     f.assignedEmployee === 'Not Assigned' || 
+                     f.assignedEmployee === null ||
+                     f.assignedEmployee === undefined ||
+                     f.assignedEmployee === '';
+            })}
+            employees={(() => {
+              console.log('=== PASSING EMPLOYEES TO MODAL ===');
+              console.log('Employees array:', employees);
+              console.log('Employees type:', typeof employees);
+              console.log('Employees length:', employees?.length || 0);
+              console.log('Employees is array:', Array.isArray(employees));
+              if (employees && employees.length > 0) {
+                console.log('First employee:', employees[0]);
+                console.log('First employee name:', employees[0]?.name);
+                console.log('First employee designation:', employees[0]?.designation);
+                console.log('All employee names:', employees.map(emp => emp?.name));
+              } else {
+                console.log('No employees found or employees is empty/null');
+              }
+              return employees;
+            })()}
+            onClose={() => setShowAssignmentModal(false)}
+            onAssign={handleAssignFarmers}
+          />
+        );
       })()}
-
-      {/* Removed FarmerForm modal; using inline FarmerRegistrationForm above */}
-
-
-
-      {/* Removed modal ViewEmployeeDetails in favor of inline ViewEmployee */}
 
       {showEmployeeDetails && selectedEmployee && (
         <ViewEditEmployeeDetails
@@ -1826,8 +1646,6 @@ const SuperAdminDashboard = () => {
           message={`Are you sure you want to delete this ${itemToDelete?.type}?`}
         />
       )}
-
-      {/* Removed RegistrationDetailModal in favor of inline RegistrationDetailsInline */}
     </div>
   );
 };

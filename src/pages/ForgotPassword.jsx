@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { authAPI } from "../api/apiService";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import logo from "../assets/rightlogo.png";
 import "../styles/Login.css";
  
 // ✅ Schema validation
@@ -60,127 +61,51 @@ const ForgotPassword = () => {
   navigate('/otp-verification', { state: { target, type: 'password' } });
 };
  
+  const getCurrentDate = () => {
+    const now = new Date();
+    return now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
   return (
-    <div className="kerala-login-container">
-      {/* Top Navigation Bar */}
-      <nav className="nic-navbar">
-        <div className="nic-logo">
-          <span>DATE</span>
-        </div>
-        <div className="nav-links">
-          <a href="#dashboard">Dashboard</a>
-          <span className="nav-dot">•</span>
-          <a href="#enrollment">Check Enrollment Status</a>
-          <span className="nav-dot">•</span>
-          <a href="#csc">Login with CSC</a>
-        </div>
-      </nav>
-
-      <div className="main-content">
-        {/* Left Section - Information Panel */}
-        <div className="info-panel">
-          <div className="agri-stack-header">
-            <h1 className="agri-stack-title">
-              <span className="agri-text">Date</span>
-              <span className="agri-text">Agri</span>
-              <span className="leaf-icon">🌿</span>
-              <span className="stack-text">Stack</span>
-            </h1>
-            <h2 className="registry-title">India Farmer Registry</h2>
+    <div className="login-page-container minimalist">
+      <div className="auth-wrapper">
+        <aside className="agri-highlights" aria-label="Agriculture highlights">
+          <h2 className="agri-title">Reset access securely</h2>
+          <ul className="agri-list">
+            <li><span className="agri-emoji">🔐</span><div><div className="agri-point">Encrypted reset links</div><div className="agri-sub">Your account security is our priority</div></div></li>
+            <li><span className="agri-emoji">📨</span><div><div className="agri-point">Email delivery tracking</div><div className="agri-sub">We confirm when your link is sent</div></div></li>
+          </ul>
+        </aside>
+        <div className="auth-card">
+          <div className="auth-brand">
+            <img src={logo} alt="DATE Logo" className="auth-logo" />
+            <div className="auth-title">Digital Agristack Transaction Enterprises</div>
+            <div className="auth-subtitle">Empowering Agricultural Excellence</div>
           </div>
-          <div className="registry-info">
-            <h3>Digital Agristack Transaction Enterprises</h3>
-            <p className="help-desk">
-              Empowering Agricultural Excellence
-            </p>
-          </div>
-          
-          {/* Enhanced Agricultural Content */}
-          <div className="agricultural-highlights">
-            <div className="highlight-item">
-              <span className="highlight-icon">🌾</span>
-              <div className="highlight-content">
-                <h4>Revolutionizing Indian Agriculture</h4>
-                <p>Connecting 140+ million farmers with cutting-edge digital solutions</p>
-              </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
+            <div className="auth-field">
+              <label>Email<span className="required">*</span></label>
+              <input {...register('userInput')} placeholder="Enter your Email" className={errors.userInput ? 'error' : ''} />
+              {errors.userInput && <div className="error">{errors.userInput.message}</div>}
             </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">📱</span>
-              <div className="highlight-content">
-                <h4>Smart Farming Technology</h4>
-                <p>AI-powered crop monitoring and precision agriculture tools</p>
-              </div>
+            <div className="auth-actions">
+              <button type="submit" className="auth-submit">Reset password</button>
             </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">💰</span>
-              <div className="highlight-content">
-                <h4>Financial Inclusion</h4>
-                <p>Direct benefit transfers and digital payment solutions</p>
-              </div>
-            </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">🌱</span>
-              <div className="highlight-content">
-                <h4>Sustainable Practices</h4>
-                <p>Promoting eco-friendly farming and climate-smart agriculture</p>
-              </div>
-            </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">🏆</span>
-              <div className="highlight-content">
-                <h4>National Recognition</h4>
-                <p>Government of India's flagship agricultural digitization initiative</p>
-              </div>
-            </div>
-          </div>
-        </div>
+          </form>
 
-        {/* Right Section - Forgot Password Form */}
-        <div className="login-form-section">
-          <div className="login-card">
-            {/* DATE Logo at Top */}
-            <div className="date-logo-section">
-              <div className="date-logo">DATE</div>
-              <div className="date-text">
-                <h3>Digital Agristack Transaction Enterprises</h3>
-                <p>Empowering Agricultural Excellence</p>
-              </div>
-            </div>
-
-            <div className="forgot-password-content">
-              <h2>Forgot Password</h2>
-              <p>Enter your email address, click "Reset password", and we'll send you a link to reset your password.</p>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="form-field">
-                  <label>Email<span className="required">*</span></label>
-                  <input
-                    {...register("userInput")}
-                    placeholder="Enter your Email"
-                    className={errors.userInput ? 'error' : ''}
-                  />
-                  {errors.userInput && <div className="error">{errors.userInput.message}</div>}
-                </div>
-                <button type="submit" className="login-btn">Reset password</button>
-              </form>
-            </div>
-
-            {/* Success Popup */}
-            {showPopup && (
-              <div className="popup">
-                <div className="popup-content">
-                  <h3>Success!</h3>
-                  <h4>
-                    A reset link has been sent to <strong>{target}</strong>
-                  </h4>
-                  <button onClick={handlePopupClose}>OK</button>
-                </div>
-              </div>
-            )}
+          <div className="auth-field" style={{ textAlign: 'center', marginTop: 10 }}>
+            <h4>Remembered your credentials? <Link to="/login">Back to Login</Link></h4>
           </div>
+
+          {showPopup && (
+            <div className="popup">
+              <div className="popup-content">
+                <h3>Success!</h3>
+                <h4>A reset link has been sent to <strong>{target}</strong></h4>
+                <button onClick={handlePopupClose}>OK</button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

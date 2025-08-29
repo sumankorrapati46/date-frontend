@@ -3,11 +3,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import "../styles/Login.css";
-import background from "../assets/background-image.png";
 import logo from "../assets/rightlogo.png";
-import illustration1 from "../assets/illustration1.png";
  
 // ✅ Validation schema
 const schema = Yup.object().shape({
@@ -64,126 +62,52 @@ const ForgotUserId = () => {
   navigate('/otp-verification', { state: { target, type: 'userId' } });
 };
  
+  const getCurrentDate = () => {
+    const now = new Date();
+    return now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
   return (
-    <div className="kerala-login-container">
-      {/* Top Navigation Bar */}
-      <nav className="nic-navbar">
-        <div className="nic-logo">
-          <span>DATE</span>
-        </div>
-        <div className="nav-links">
-          <a href="#dashboard">Dashboard</a>
-          <span className="nav-dot">•</span>
-          <a href="#enrollment">Check Enrollment Status</a>
-          <span className="nav-dot">•</span>
-          <a href="#csc">Login with CSC</a>
-        </div>
-      </nav>
+    <div className="login-page-container minimalist">
+      <div className="auth-wrapper">
+        <aside className="agri-highlights" aria-label="Agriculture highlights">
+          <h2 className="agri-title">Recover your User ID</h2>
+          <ul className="agri-list">
+            <li><span className="agri-emoji">📧</span><div><div className="agri-point">Email or phone supported</div><div className="agri-sub">We’ll send your User ID securely</div></div></li>
+            <li><span className="agri-emoji">🛡️</span><div><div className="agri-point">Privacy-first process</div><div className="agri-sub">No credentials are exposed</div></div></li>
+          </ul>
+        </aside>
 
-      <div className="main-content">
-        {/* Left Section - Information Panel */}
-        <div className="info-panel">
-          <div className="agri-stack-header">
-            <h1 className="agri-stack-title">
-              <span className="agri-text">Date</span>
-              <span className="agri-text">Agri</span>
-              <span className="leaf-icon">🌿</span>
-              <span className="stack-text">Stack</span>
-            </h1>
-            <h2 className="registry-title">India Farmer Registry</h2>
+        <div className="auth-card">
+          <div className="auth-brand">
+            <img src={logo} alt="DATE Logo" className="auth-logo" />
+            <div className="auth-title">Digital Agristack Transaction Enterprises</div>
+            <div className="auth-subtitle">Empowering Agricultural Excellence</div>
           </div>
-          <div className="registry-info">
-            <h3>Digital Agristack Transaction Enterprises</h3>
-            <p className="help-desk">
-              Empowering Agricultural Excellence
-            </p>
-          </div>
-          
-          {/* Enhanced Agricultural Content */}
-          <div className="agricultural-highlights">
-            <div className="highlight-item">
-              <span className="highlight-icon">🌾</span>
-              <div className="highlight-content">
-                <h4>Revolutionizing Indian Agriculture</h4>
-                <p>Connecting 140+ million farmers with cutting-edge digital solutions</p>
-              </div>
-            </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">📱</span>
-              <div className="highlight-content">
-                <h4>Smart Farming Technology</h4>
-                <p>AI-powered crop monitoring and precision agriculture tools</p>
-              </div>
-            </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">💰</span>
-              <div className="highlight-content">
-                <h4>Financial Inclusion</h4>
-                <p>Direct benefit transfers and digital payment solutions</p>
-              </div>
-            </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">🌱</span>
-              <div className="highlight-content">
-                <h4>Sustainable Practices</h4>
-                <p>Promoting eco-friendly farming and climate-smart agriculture</p>
-              </div>
-            </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">🏆</span>
-              <div className="highlight-content">
-                <h4>National Recognition</h4>
-                <p>Government of India's flagship agricultural digitization initiative</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Right Section - Forgot User ID Form */}
-        <div className="login-form-section">
-          <div className="login-card">
-            {/* DATE Logo at Top */}
-            <div className="date-logo-section">
-              <img src={logo} alt="DATE Logo" className="date-logo" />
-              <div className="date-text">
-                <h3>Digital Agristack Transaction Enterprises</h3>
-                <p>Empowering Agricultural Excellence</p>
+          <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
+            <div className="auth-field">
+              <label>Email / Phone / ID <span className="required">*</span></label>
+              <input {...register('userInput')} placeholder="Enter your Email or Phone or ID" className={errors.userInput ? 'error' : ''} />
+              {errors.userInput && <div className="error">{errors.userInput.message}</div>}
+            </div>
+            <div className="auth-actions">
+              <button type="submit" className="auth-submit">Reset User ID</button>
+            </div>
+          </form>
+
+          {showPopup && (
+            <div className="popup">
+              <div className="popup-content">
+                <h3>Success!</h3>
+                <h4>Your User ID has been sent to <strong>{target}</strong></h4>
+                <button onClick={handlePopupClose}>OK</button>
               </div>
             </div>
+          )}
 
-            <div className="forgot-userid-content">
-              <h2>Forgot User ID</h2>
-              <p>Enter your Email / Phone / ID, click "Reset User ID", and we'll send your User ID if it exists.</p>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="form-field">
-                  <label>Email / Phone / ID <span className="required">*</span></label>
-                  <input
-                    {...register("userInput")}
-                    placeholder="Enter your Email or Phone or ID"
-                    className={errors.userInput ? 'error' : ''}
-                  />
-                  {errors.userInput && <div className="error">{errors.userInput.message}</div>}
-                </div>
-                <button type="submit" className="login-btn">Reset User ID</button>
-              </form>
-            </div>
-
-            {/* Success Popup */}
-            {showPopup && (
-              <div className="popup">
-                <div className="popup-content">
-                  <h3>Success!</h3>
-                  <h4>
-                    Your User ID has been sent to <strong>{target}</strong>
-                  </h4>
-                  <button onClick={handlePopupClose}>OK</button>
-                </div>
-              </div>
-            )}
+          <div className="auth-field" style={{ textAlign: 'center', marginTop: 10 }}>
+            <h4>Back to <Link to="/login">Login</Link></h4>
           </div>
         </div>
       </div>

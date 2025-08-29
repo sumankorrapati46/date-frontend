@@ -14,7 +14,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.62.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4",
     "yup": "^1.7.0"
   },
@@ -51,5 +51,8 @@
     "dashboard"
   ],
   "author": "AgriStack Team",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "ajv": "^8.17.1"
+  }
 }

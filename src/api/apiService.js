@@ -40,14 +40,60 @@ api.interceptors.response.use(
 export const authAPI = {
   // Login
   login: async (credentials) => {
-    const response = await api.post('/auth/login', credentials);
-    return response.data;
+    // Normalize payload keys to match backend expectations
+    const payload = {
+      email: credentials.email || credentials.userName || credentials.username,
+      password: credentials.password,
+    };
+    try {
+      const response = await api.post('/auth/login', payload);
+      // Try to extract token from common locations
+      const headerAuth = response.headers?.authorization || response.headers?.Authorization;
+      const headerToken = headerAuth?.startsWith('Bearer ')
+        ? headerAuth.substring('Bearer '.length)
+        : headerAuth;
+      const body = response.data || {};
+      const bodyToken = body.token || body.jwt || body.accessToken || body.access_token;
+      return { ...body, token: bodyToken || headerToken };
+    } catch (err) {
+      // Fallbacks for common Spring endpoints
+      try {
+        const response = await api.post('/login', payload);
+        const headerAuth = response.headers?.authorization || response.headers?.Authorization;
+        const headerToken = headerAuth?.startsWith('Bearer ')
+          ? headerAuth.substring('Bearer '.length)
+          : headerAuth;
+        const body = response.data || {};
+        const bodyToken = body.token || body.jwt || body.accessToken || body.access_token;
+        return { ...body, token: bodyToken || headerToken };
+      } catch (err2) {
+        const response = await api.post('/authenticate', payload);
+        const headerAuth = response.headers?.authorization || response.headers?.Authorization;
+        const headerToken = headerAuth?.startsWith('Bearer ')
+          ? headerAuth.substring('Bearer '.length)
+          : headerAuth;
+        const body = response.data || {};
+        const bodyToken = body.token || body.jwt || body.accessToken || body.access_token;
+        return { ...body, token: bodyToken || headerToken };
+      }
+    }
   },
 
   // Get user profile
   getProfile: async () => {
-    const response = await api.get('/auth/profile');
-    return response.data;
+    // Try common profile endpoints for compatibility
+    try {
+      const res = await api.get('/auth/me');
+      return res.data;
+    } catch (e1) {
+      try {
+        const res = await api.get('/auth/profile');
+        return res.data;
+      } catch (e2) {
+        const res = await api.get('/auth/users/profile');
+        return res.data;
+      }
+    }
   },
 
   // Register user
@@ -751,7 +797,7 @@ export const dashboardAPI = {
   }
 };
 
-// Main API service object
+// Main API service object (for backward compatibility)
 export const apiService = {
   // Authentication
   login: authAPI.login,
@@ -765,7 +811,10 @@ export const apiService = {
   resetPassword: authAPI.resetPassword,
   changePassword: authAPI.changePassword,
   changeUserId: authAPI.changeUserId,
-  logout: authAPI.logout,
+  logout: () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  },
 
   // User management
   getAllUsers: superAdminAPI.getAllUsers,

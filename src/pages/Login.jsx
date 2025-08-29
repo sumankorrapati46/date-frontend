@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { authAPI } from '../api/apiService';
@@ -25,7 +25,44 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [welcomeMessage, setWelcomeMessage] = useState('');
   const navigate = useNavigate();
+
+  // Welcome messages that will randomly refresh
+  const welcomeMessages = [
+    "Welcome to DATE Digital Agristack! 🌾",
+    "Empowering Indian Agriculture Today! 🚀",
+    "Digital Solutions for Modern Farming! 💡",
+    "Transforming Agriculture with Technology! 🌱",
+    "Building a Sustainable Agricultural Future! 🌍",
+    "Smart Farming, Smart India! 🇮🇳",
+    "Innovation Meets Agriculture! ⚡",
+    "Growing Together, Growing Stronger! 🌿"
+  ];
+
+  // Helper to render current date like reference header
+  const getCurrentDate = () => {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return now.toLocaleDateString('en-US', options);
+  };
+
+  // Function to get random welcome message
+  const getRandomWelcomeMessage = () => {
+    const randomIndex = Math.floor(Math.random() * welcomeMessages.length);
+    return welcomeMessages[randomIndex];
+  };
+
+  // Update welcome message every 5 seconds
+  useEffect(() => {
+    setWelcomeMessage(getRandomWelcomeMessage());
+    
+    const interval = setInterval(() => {
+      setWelcomeMessage(getRandomWelcomeMessage());
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLoginType = (type) => {
     setLoginType(type);
@@ -51,14 +88,19 @@ const Login = () => {
       return;
     }
     try {
-      const loginData = { userName, password };
+      // Backend expects email/username as "email"
+      const loginData = { email: userName, password };
       const response = await authAPI.login(loginData);
       console.log('Login - Full login response:', response);
       console.log('Login - Login response data keys:', Object.keys(response || {}));
-      const { token } = response;
+      // Accept multiple possible token field names
+      const token = response.token || response.jwt || response.accessToken || response.data?.token || localStorage.getItem('token');
+      if (token) {
+        localStorage.setItem('token', token);
+      }
       
       // Extract user data from login response
-      const userData = response.user || response.data?.user;
+      const userData = response.user || response.data?.user || response.data;
       console.log('Login - User data from login response:', userData);
       
       if (userData) {
@@ -120,7 +162,7 @@ const Login = () => {
       } else {
         // Fallback to profile fetch if user data not in login response
         try {
-          // Get user profile with token
+          // Get user profile (cookie or bearer supported)
           const profileData = await authAPI.getProfile();
           console.log('Login - Profile response data:', profileData);
           console.log('Login - Profile response data keys:', Object.keys(profileData || {}));
@@ -322,92 +364,97 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      {/* Top Navigation Bar */}
-      <nav className="nic-navbar">
-        <div className="nic-logo">
-          <img src={logo} alt="DATE Logo" style={{ height: '32px', marginRight: '12px' }} />
-          <div className="nic-text">Digital Agristack Transaction Enterprises</div>
-        </div>
-        <div className="nav-links">
-          <button className="link-like" onClick={() => navigate('/analytics')}>Dashboard</button>
-          <span className="nav-dot">•</span>
-          <a href="#enrollment">Check Enrollment Status</a>
-        </div>
-      </nav>
-
-      <div className="main-content">
-        {/* Left Section - Information Panel */}
-        <div className="info-panel">
-          <div className="agri-stack-header">
-            <h1 className="agri-stack-title">
-              <span className="agri-text">Digital</span>
-              <span className="stack-text">Agristack</span>
-              <span className="leaf-icon">🌿</span>
-            </h1>
-            <h2 className="registry-title">India Farmer Registry</h2>
-          </div>
-          <div className="registry-info">
-            <p className="registry-description">
-              Farmer Registry in India enables farmers to receive a unique Farmer ID to access government benefits. 
-              Register now to ensure seamless access to agricultural schemes and services!
-            </p>
+    <div className="login-page-container minimalist">
+      {/* Top Bar */}
+      <header className="topbar">
+        <div className="topbar-content">
+          <div className="topbar-left">
+            <img src={logo} alt="DATE Logo" className="topbar-logo" />
+            <div className="topbar-date">
+              <span className="date-text">{getCurrentDate()}</span>
+            </div>
           </div>
           
-          <div className="help-desk">
-            <p>Help Desk : 1800-425-1661</p>
+          {/* Welcome Greeting in Center */}
+          <div className="topbar-welcome">
+            <h2 className="welcome-header">{welcomeMessage}</h2>
           </div>
+          
+          <nav className="topbar-menu">
+            <button className="topbar-btn" onClick={() => navigate('/')}>Home</button>
+            <button className="topbar-btn" onClick={() => navigate('/analytics')}>Dashboard</button>
+            <button className="topbar-btn" onClick={() => navigate('/menu')}>Menu</button>
+            <button className="topbar-btn" onClick={() => navigate('/about')}>About</button>
+          </nav>
         </div>
-
-        {/* Right Section - Login Form */}
-        <div className="login-form-section">
-          <div className="login-card">
-            {/* DATE Logo at Top */}
-            <div className="date-logo-section">
-              <img src={logo} alt="DATE Logo" className="date-logo" />
-              <div className="date-text">
-                <h3>Digital Agristack Transaction Enterprises</h3>
-                <p>Empowering Agricultural Excellence</p>
+      </header>
+      <div className="auth-wrapper">
+        <aside className="agri-highlights" aria-label="Agriculture highlights">
+          <h2 className="agri-title">Transforming Indian Agriculture</h2>
+          <ul className="agri-list">
+            <li>
+              <span className="agri-emoji">🌾</span>
+              <div>
+                <div className="agri-point">140+ million farmers connected</div>
+                <div className="agri-sub">Digital access to schemes and services</div>
               </div>
-            </div>
-            {/* Login Type Section */}
-            <div className="login-type-section">
-              <h3>Log In as</h3>
-              <div className="login-type-toggle">
-                <button 
-                  type="button"
-                  className={`toggle-btn ${loginType === 'official' ? 'active' : ''}`}
-                  onClick={() => handleLoginType('official')}
-                >
-                  Official
-                </button>
-                <button 
-                  type="button"
-                  className={`toggle-btn ${loginType === 'fpo' ? 'active' : ''}`}
-                  onClick={() => handleLoginType('fpo')}
-                >
-                  FPO
-                </button>
-                <button 
-                  type="button"
-                  className={`toggle-btn ${loginType === 'employee' ? 'active' : ''}`}
-                  onClick={() => handleLoginType('employee')}
-                >
-                  Employee
-                </button>
-                <button 
-                  type="button"
-                  className={`toggle-btn ${loginType === 'farmer' ? 'active' : ''}`}
-                  onClick={() => handleLoginType('farmer')}
-                >
-                  Farmer
-                </button>
+            </li>
+            <li>
+              <span className="agri-emoji">📡</span>
+              <div>
+                <div className="agri-point">Precision farming & AI insights</div>
+                <div className="agri-sub">Crop monitoring, advisory, alerts</div>
               </div>
-            </div>
+            </li>
+            <li>
+              <span className="agri-emoji">💧</span>
+              <div>
+                <div className="agri-point">Water & soil intelligence</div>
+                <div className="agri-sub">Smart irrigation and resource planning</div>
+              </div>
+            </li>
+            <li>
+              <span className="agri-emoji">💰</span>
+              <div>
+                <div className="agri-point">Direct benefit transfers</div>
+                <div className="agri-sub">Faster, transparent financial inclusion</div>
+              </div>
+            </li>
+          </ul>
+        </aside>
+        <div className="auth-card">
+          <div className="auth-brand">
+            <img src={logo} alt="DATE Logo" className="auth-logo" />
+            <div className="auth-title">Digital Agristack Transaction Enterprises</div>
+            <div className="auth-subtitle">Empowering Agricultural Excellence</div>
+          </div>
 
-            <form onSubmit={handleSubmit} className="login-form">
+          <div className="auth-tabs">
+            <button 
+              type="button"
+              className={`auth-tab ${loginType === 'official' ? 'active' : ''}`}
+              onClick={() => handleLoginType('official')}
+            >Official</button>
+            <button 
+              type="button"
+              className={`auth-tab ${loginType === 'fpo' ? 'active' : ''}`}
+              onClick={() => handleLoginType('fpo')}
+            >FPO</button>
+            <button 
+              type="button"
+              className={`auth-tab ${loginType === 'employee' ? 'active' : ''}`}
+              onClick={() => handleLoginType('employee')}
+            >Employee</button>
+            <button 
+              type="button"
+              className={`auth-tab ${loginType === 'farmer' ? 'active' : ''}`}
+              onClick={() => handleLoginType('farmer')}
+            >Farmer</button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
               {/* Username Field */}
-              <div className="form-field">
+              <div className="auth-field">
                 <label>Insert Registered Mobile Number as Username</label>
                 <input
                   type="text"
@@ -420,9 +467,9 @@ const Login = () => {
               </div>
 
               {/* Password Field */}
-              <div className="form-field">
+              <div className="auth-field">
                 <label>Enter password</label>
-                <div className="password-input-container">
+                <div className="auth-password">
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
@@ -433,7 +480,7 @@ const Login = () => {
                   />
                   <button
                     type="button"
-                    className="eye-icon"
+                    className="auth-eye"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     👁️
@@ -442,20 +489,20 @@ const Login = () => {
               </div>
 
               {/* Forgot Password Link */}
-              <div className="forgot-password">
+              <div className="auth-links">
                 <a href="/forgot-password">Forgot Password?</a>
-                <span className="separator">|</span>
+                <span className="sep">|</span>
                 <a href="/forgot-userid">Forgot User ID?</a>
               </div>
 
               {/* Captcha Section */}
-              <div className="captcha-section">
+              <div className="auth-captcha">
                 <label>Captcha</label>
-                <div className="captcha-container">
-                  <div className="captcha-image">
+                <div className="auth-captcha-row">
+                  <div className="auth-captcha-badge">
                     <span>{captchaValue}</span>
                   </div>
-                  <button type="button" className="refresh-captcha" onClick={handleRefreshCaptcha}>
+                  <button type="button" className="auth-refresh" onClick={handleRefreshCaptcha}>
                     🔄
                   </button>
                   <input
@@ -463,29 +510,28 @@ const Login = () => {
                     value={captcha}
                     onChange={e => setCaptcha(e.target.value)}
                     placeholder="Enter Captcha"
-                    className="captcha-input"
+                    className="auth-captcha-input"
                   />
                 </div>
               </div>
 
-              {error && <div className="error-message">{error}</div>}
+              {error && <div className="auth-error">{error}</div>}
               
-              <div className="login-actions-row">
-                <button type="submit" className="login-btn" disabled={loading}>
+              <div className="auth-actions">
+                <button type="submit" className="auth-submit" disabled={loading}>
                   {loading ? 'Logging in...' : 'Log In'}
                 </button>
                 {(loginType === 'employee' || loginType === 'farmer' || loginType === 'fpo') && (
                   <button
                     type="button"
-                    className="create-account-btn"
+                    className="auth-secondary"
                     onClick={handleCreateAccount}
                   >
                     Create New user Acount
                   </button>
                 )}
               </div>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
     </div>

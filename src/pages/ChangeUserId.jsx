@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { authAPI } from '../api/apiService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import "../styles/Login.css";
+import logo from "../assets/rightlogo.png";
 
  
 const ChangeUserId = () => {
@@ -36,125 +37,40 @@ const handleChangeUserId = async () => {
   }
 };
 
+  const getCurrentDate = () => new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
   return (
-    <div className="kerala-login-container">
-      {/* Top Navigation Bar */}
-      <nav className="nic-navbar">
-        <div className="nic-logo">
-          <span>DATE</span>
-        </div>
-        <div className="nav-links">
-          <a href="#dashboard">Dashboard</a>
-          <span className="nav-dot">•</span>
-          <a href="#enrollment">Check Enrollment Status</a>
-          <span className="nav-dot">•</span>
-          <a href="#csc">Login with CSC</a>
-        </div>
-      </nav>
-
-      <div className="main-content">
-        {/* Left Section - Information Panel */}
-        <div className="info-panel">
-          <div className="agri-stack-header">
-            <h1 className="agri-stack-title">
-              <span className="agri-text">Date</span>
-              <span className="agri-text">Agri</span>
-              <span className="leaf-icon">🌿</span>
-              <span className="stack-text">Stack</span>
-            </h1>
-            <h2 className="registry-title">India Farmer Registry</h2>
+    <div className="login-page-container minimalist">
+      <div className="auth-wrapper">
+        <aside className="agri-highlights" aria-label="Agriculture highlights">
+          <h2 className="agri-title">Update your User ID</h2>
+          <ul className="agri-list">
+            <li><span className="agri-emoji">🆔</span><div><div className="agri-point">Unique and secure</div><div className="agri-sub">Choose a memorable identifier</div></div></li>
+          </ul>
+        </aside>
+        <div className="auth-card">
+          <div className="auth-brand">
+            <img src={logo} alt="DATE Logo" className="auth-logo" />
+            <div className="auth-title">Digital Agristack Transaction Enterprises</div>
+            <div className="auth-subtitle">Empowering Agricultural Excellence</div>
           </div>
-          <div className="registry-info">
-            <h3>Digital Agristack Transaction Enterprises</h3>
-            <p className="help-desk">
-              Empowering Agricultural Excellence
-            </p>
-          </div>
-          
-          {/* Enhanced Agricultural Content */}
-          <div className="agricultural-highlights">
-            <div className="highlight-item">
-              <span className="highlight-icon">🌾</span>
-              <div className="highlight-content">
-                <h4>Revolutionizing Indian Agriculture</h4>
-                <p>Connecting 140+ million farmers with cutting-edge digital solutions</p>
-              </div>
+          <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleChangeUserId(); }}>
+            <div className="auth-field">
+              <label htmlFor="newUserId">New User ID</label>
+              <input id="newUserId" type="text" value={newUserId} onChange={(e) => setNewUserId(e.target.value)} />
             </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">📱</span>
-              <div className="highlight-content">
-                <h4>Smart Farming Technology</h4>
-                <p>AI-powered crop monitoring and precision agriculture tools</p>
-              </div>
+            <div className="auth-field">
+              <label htmlFor="confirmUserId">Confirm User ID</label>
+              <input id="confirmUserId" type="text" value={confirmUserId} onChange={(e) => setConfirmUserId(e.target.value)} />
             </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">💰</span>
-              <div className="highlight-content">
-                <h4>Financial Inclusion</h4>
-                <p>Direct benefit transfers and digital payment solutions</p>
-              </div>
+            {error && <p className="error-text">{error}</p>}
+            <div className="auth-actions">
+              <button type="submit" className="auth-submit">Change User ID</button>
             </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">🌱</span>
-              <div className="highlight-content">
-                <h4>Sustainable Practices</h4>
-                <p>Promoting eco-friendly farming and climate-smart agriculture</p>
-              </div>
-            </div>
-            
-            <div className="highlight-item">
-              <span className="highlight-icon">🏆</span>
-              <div className="highlight-content">
-                <h4>National Recognition</h4>
-                <p>Government of India's flagship agricultural digitization initiative</p>
-              </div>
-            </div>
-          </div>
-        </div>
+          </form>
 
-        {/* Right Section - Change User ID Form */}
-        <div className="login-form-section">
-          <div className="login-card">
-            {/* DATE Logo at Top */}
-            <div className="date-logo-section">
-              <div className="date-logo">DATE</div>
-              <div className="date-text">
-                <h3>Digital Agristack Transaction Enterprises</h3>
-                <p>Empowering Agricultural Excellence</p>
-              </div>
-            </div>
-
-            <div className="change-userid-content">
-              <h2>User ID</h2>
-              <h4 style={{textAlign: 'center', color: '#666', marginBottom: '1.5rem'}}>Set a strong User id to prevent unauthorized access to your account.</h4>
-              <form>
-                <div className="form-field">
-                  <label htmlFor="newUserId">New User ID</label>
-                  <input
-                    id="newUserId"
-                    type="text"
-                    value={newUserId}
-                    onChange={(e) => setNewUserId(e.target.value)}
-                  />
-                </div>
-                <div className="form-field">
-                  <label htmlFor="confirmUserId">Confirm User ID</label>
-                  <input
-                    id="confirmUserId"
-                    type="text"
-                    value={confirmUserId}
-                    onChange={(e) => setConfirmUserId(e.target.value)}
-                  />
-                </div>
-                {error && <p className="error-text">{error}</p>}
-                <button className="login-btn" onClick={handleChangeUserId}>
-                  Change User ID
-                </button>
-              </form>
-            </div>
+          <div className="auth-field" style={{ textAlign: 'center', marginTop: 10 }}>
+            <h4>Done here? <Link to="/login">Back to Login</Link></h4>
           </div>
         </div>
       </div>
