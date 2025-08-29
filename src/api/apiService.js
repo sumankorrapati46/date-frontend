@@ -40,58 +40,33 @@ api.interceptors.response.use(
 export const authAPI = {
   // Login
   login: async (credentials) => {
-    // Normalize payload keys to match backend expectations
+    // Backend expects payload: { userName, password }
     const payload = {
-      email: credentials.email || credentials.userName || credentials.username,
+      userName: credentials.userName || credentials.username || credentials.email,
       password: credentials.password,
     };
-    try {
-      const response = await api.post('/auth/login', payload);
-      // Try to extract token from common locations
-      const headerAuth = response.headers?.authorization || response.headers?.Authorization;
-      const headerToken = headerAuth?.startsWith('Bearer ')
-        ? headerAuth.substring('Bearer '.length)
-        : headerAuth;
-      const body = response.data || {};
-      const bodyToken = body.token || body.jwt || body.accessToken || body.access_token;
-      return { ...body, token: bodyToken || headerToken };
-    } catch (err) {
-      // Fallbacks for common Spring endpoints
-      try {
-        const response = await api.post('/login', payload);
-        const headerAuth = response.headers?.authorization || response.headers?.Authorization;
-        const headerToken = headerAuth?.startsWith('Bearer ')
-          ? headerAuth.substring('Bearer '.length)
-          : headerAuth;
-        const body = response.data || {};
-        const bodyToken = body.token || body.jwt || body.accessToken || body.access_token;
-        return { ...body, token: bodyToken || headerToken };
-      } catch (err2) {
-        const response = await api.post('/authenticate', payload);
-        const headerAuth = response.headers?.authorization || response.headers?.Authorization;
-        const headerToken = headerAuth?.startsWith('Bearer ')
-          ? headerAuth.substring('Bearer '.length)
-          : headerAuth;
-        const body = response.data || {};
-        const bodyToken = body.token || body.jwt || body.accessToken || body.access_token;
-        return { ...body, token: bodyToken || headerToken };
-      }
-    }
+    const response = await api.post('/auth/login', payload);
+    return response.data;
   },
 
   // Get user profile
   getProfile: async () => {
-    // Try common profile endpoints for compatibility
+    // Preferred profile endpoint, then fallbacks
     try {
-      const res = await api.get('/auth/me');
+      const res = await api.get('/user/profile');
       return res.data;
-    } catch (e1) {
+    } catch (e0) {
       try {
-        const res = await api.get('/auth/profile');
+        const res = await api.get('/auth/me');
         return res.data;
-      } catch (e2) {
-        const res = await api.get('/auth/users/profile');
-        return res.data;
+      } catch (e1) {
+        try {
+          const res = await api.get('/auth/profile');
+          return res.data;
+        } catch (e2) {
+          const res = await api.get('/auth/users/profile');
+          return res.data;
+        }
       }
     }
   },
@@ -251,14 +226,50 @@ export const superAdminAPI = {
 
   // Approve user
   approveUser: async (userId, role) => {
-    const response = await api.put(`/auth/users/${userId}/approve`, { role });
-    return response.data;
+    try {
+      // Try multiple endpoint variations for compatibility
+      let response;
+      try {
+        // Primary endpoint
+        response = await api.put(`/auth/users/${userId}/approve`, { role });
+      } catch (error) {
+        if (error.response?.status === 403 || error.response?.status === 404) {
+          // Try alternative endpoint
+          response = await api.put(`/super-admin/users/${userId}/approve`, { role });
+        } else {
+          throw error;
+        }
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Error in approveUser:', error);
+      console.error('Error response:', error.response?.data);
+      throw error;
+    }
   },
 
   // Reject user (update status to REJECTED)
   rejectUser: async (userId, reason) => {
-    const response = await api.put(`/auth/users/${userId}/status`, { status: 'REJECTED' });
-    return response.data;
+    try {
+      // Try multiple endpoint variations for compatibility
+      let response;
+      try {
+        // Primary endpoint
+        response = await api.put(`/auth/users/${userId}/status`, { status: 'REJECTED', reason });
+      } catch (error) {
+        if (error.response?.status === 403 || error.response?.status === 404) {
+          // Try alternative endpoint
+          response = await api.put(`/super-admin/users/${userId}/reject`, { reason });
+        } else {
+          throw error;
+        }
+      }
+      return response.data;
+    } catch (error) {
+      console.error('Error in rejectUser:', error);
+      console.error('Error response:', error.response?.data);
+      throw error;
+    }
   },
 
   // Delete user

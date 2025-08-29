@@ -118,6 +118,9 @@ const SuperAdminDashboard = () => {
     district: ''
   });
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  
+  // Add time filter state
+  const [timeFilter, setTimeFilter] = useState('all'); // 'all', 'today', 'month', 'year'
 
 
   const [viewingRegistration, setViewingRegistration] = useState(null);
@@ -210,110 +213,11 @@ const SuperAdminDashboard = () => {
       console.log('First employee structure:', employeesData?.[0]);
       console.log('Registrations data:', registrationsData);
 
-      // If registrations data is empty, add some mock data for testing
-      let finalRegistrationsData = registrationsData;
-      if (!registrationsData || registrationsData.length === 0) {
-        console.log('No registration data from API, adding mock data for testing');
-        finalRegistrationsData = [
-      {
-        id: 1,
-        name: 'John Doe',
-            email: 'john.doe@example.com',
-            phoneNumber: '9876543210',
-            role: 'FARMER',
-            status: 'PENDING'
-      },
-      {
-        id: 2,
-        name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            phoneNumber: '9876543211',
-            role: 'EMPLOYEE',
-            status: 'PENDING'
-      },
-      {
-        id: 3,
-            name: 'Bob Wilson',
-            email: 'bob.wilson@example.com',
-            phoneNumber: '9876543212',
-            role: 'FARMER',
-            status: 'APPROVED'
-          }
-        ];
-      }
+             // Use real API data only
+       let finalRegistrationsData = registrationsData || [];
 
-      // Use real API data if available, otherwise use mock data
-      let finalFarmersData = farmersData;
-      if (!farmersData || farmersData.length === 0) {
-        console.log('⚠️ No API data available, using mock data for farmers (timestamp: ' + new Date().toISOString() + ')');
-        console.log('💡 To see real KYC updates, ensure the backend API is running and accessible');
-        finalFarmersData = [
-      {
-        id: 1,
-            name: 'Ramu Yadav',
-            contactNumber: '9876543210',
-            email: 'ramu.yadav@example.com',
-            accessStatus: 'ACTIVE',
-            kycStatus: 'PENDING',
-            assignedEmployee: 'harish reddy'
-      },
-      {
-        id: 2,
-            name: 'Krishna Kumar',
-            contactNumber: '9983733210',
-            email: 'krishna.kumar@example.com',
-            accessStatus: 'ACTIVE',
-            kycStatus: 'PENDING',
-            assignedEmployee: 'harish reddy'
-          },
-          {
-            id: 3,
-            name: 'suman kurrapati',
-            contactNumber: '9783733210',
-            email: 'suman.kurrapati@example.com',
-            accessStatus: 'ACTIVE',
-            kycStatus: 'PENDING',
-            assignedEmployee: 'harish reddy'
-          },
-          {
-            id: 4,
-            name: 'vamsi krishna',
-            contactNumber: '9783733210',
-            email: 'vamsi.krishna@example.com',
-            accessStatus: 'ACTIVE',
-            kycStatus: 'PENDING',
-            assignedEmployee: 'harish reddy'
-          },
-          {
-            id: 5,
-            name: 'hari kumar chowdary',
-            contactNumber: '6271979190',
-            email: 'hari.chowdary@example.com',
-            accessStatus: 'ACTIVE',
-            kycStatus: 'PENDING',
-            assignedEmployee: 'harish reddy'
-          },
-          {
-            id: 6,
-            name: 'kumar sreenu chowdary',
-            contactNumber: '6302949363',
-            email: 'kumar.chowdary@example.com',
-            accessStatus: 'ACTIVE',
-            kycStatus: 'PENDING',
-            assignedEmployee: 'harish reddy'
-          },
-          {
-            id: 7,
-            name: 'Ainash kumar',
-            contactNumber: '9798433210',
-            email: 'ainash.kumar@example.com',
-            accessStatus: 'ACTIVE',
-            kycStatus: 'PENDING',
-            assignedEmployee: 'harish reddy'
-          }
-        ];
-        console.log('Mock farmers data created:', finalFarmersData);
-      }
+             // Use real API data only
+       let finalFarmersData = farmersData || [];
 
       console.log('Setting farmers data:', finalFarmersData);
       console.log('Sample farmer structure:', finalFarmersData[0]);
@@ -415,14 +319,52 @@ const SuperAdminDashboard = () => {
   };
 
   const getStats = () => {
-    const totalFarmers = farmers.length;
-    const totalEmployees = employees.length;
-    const pendingRegistrations = registrations.filter(r => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    // Helper function to check if a date is within the specified period
+    const isWithinPeriod = (dateString, period) => {
+      if (!dateString) return false;
+      const date = new Date(dateString);
+      
+      switch (period) {
+        case 'today':
+          return date >= today;
+        case 'month':
+          return date >= startOfMonth;
+        case 'year':
+          return date >= startOfYear;
+        default:
+          return true; // 'all' period
+      }
+    };
+
+    // Filter data based on time period
+    const filteredFarmers = farmers.filter(farmer => {
+      const createdDate = farmer.createdAt || farmer.created_at || farmer.registrationDate;
+      return isWithinPeriod(createdDate, timeFilter);
+    });
+
+    const filteredEmployees = employees.filter(employee => {
+      const createdDate = employee.createdAt || employee.created_at || employee.registrationDate;
+      return isWithinPeriod(createdDate, timeFilter);
+    });
+
+    const filteredRegistrations = registrations.filter(registration => {
+      const createdDate = registration.createdAt || registration.created_at || registration.registrationDate;
+      return isWithinPeriod(createdDate, timeFilter);
+    });
+
+    const totalFarmers = timeFilter === 'all' ? farmers.length : filteredFarmers.length;
+    const totalEmployees = timeFilter === 'all' ? employees.length : filteredEmployees.length;
+    const pendingRegistrations = filteredRegistrations.filter(r => {
       const status = r.status || r.userStatus || r.accessStatus;
       return status === 'PENDING' || status === 'pending' || status === 'Pending';
     }).length;
-    const unassignedFarmers = farmers.filter(f => f.accessStatus === 'PENDING').length;
-    const activeEmployees = employees.filter(e => e.status === 'ACTIVE').length;
+    const unassignedFarmers = filteredFarmers.filter(f => f.accessStatus === 'PENDING').length;
+    const activeEmployees = filteredEmployees.filter(e => e.status === 'ACTIVE').length;
     const totalFPO = 0; // Placeholder for FPO count
 
     return {
@@ -431,9 +373,9 @@ const SuperAdminDashboard = () => {
       pendingRegistrations,
       unassignedFarmers,
       activeEmployees,
-      totalFPO
+      totalFPO,
+      timeFilter
     };
-
   };
 
   const handleViewRegistration = (registration) => {
@@ -449,27 +391,55 @@ const SuperAdminDashboard = () => {
 
   const handleApproveRegistration = async (registrationId) => {
     try {
-      await superAdminAPI.approveUser(registrationId);
+      console.log('🔄 Approving registration for user ID:', registrationId);
+      const result = await superAdminAPI.approveUser(registrationId);
+      console.log('✅ Approval result:', result);
+      
       setRegistrations(prev => prev.map(reg => 
         reg.id === registrationId ? { ...reg, status: 'APPROVED' } : reg
       ));
       alert('Registration approved successfully!');
     } catch (error) {
-      console.error('Error approving registration:', error);
-      alert('Failed to approve registration');
+      console.error('❌ Error approving registration:', error);
+      console.error('❌ Error details:', error.response?.data || error.message);
+      
+      // Provide more specific error messages
+      if (error.response?.status === 403) {
+        alert('Access denied. You may not have permission to approve this registration.');
+      } else if (error.response?.status === 404) {
+        alert('Registration not found. The user may have been deleted.');
+      } else if (error.code === 'ERR_NETWORK') {
+        alert('Network error. Please check your connection and try again.');
+      } else {
+        alert(`Failed to approve registration: ${error.message}`);
+      }
     }
   };
 
   const handleRejectRegistration = async (registrationId) => {
     try {
-      await superAdminAPI.rejectUser(registrationId);
+      console.log('🔄 Rejecting registration for user ID:', registrationId);
+      const result = await superAdminAPI.rejectUser(registrationId);
+      console.log('✅ Rejection result:', result);
+      
       setRegistrations(prev => prev.map(reg => 
         reg.id === registrationId ? { ...reg, status: 'REJECTED' } : reg
       ));
       alert('Registration rejected successfully!');
     } catch (error) {
-      console.error('Error rejecting registration:', error);
-      alert('Failed to reject registration');
+      console.error('❌ Error rejecting registration:', error);
+      console.error('❌ Error details:', error.response?.data || error.message);
+      
+      // Provide more specific error messages
+      if (error.response?.status === 403) {
+        alert('Access denied. You may not have permission to reject this registration.');
+      } else if (error.response?.status === 404) {
+        alert('Registration not found. The user may have been deleted.');
+      } else if (error.code === 'ERR_NETWORK') {
+        alert('Network error. Please check your connection and try again.');
+      } else {
+        alert(`Failed to reject registration: ${error.message}`);
+      }
     }
   };
 
@@ -617,25 +587,59 @@ const SuperAdminDashboard = () => {
       console.log('🔍 Employee ID:', employeeId);
       console.log('🔍 Assignments object:', assignments);
       
-      // Try bulk assign first, then fallback to individual assignments
+      // Try multiple assignment strategies
+      let assignmentSuccessful = false;
+      
+      // Strategy 1: Try superAdminAPI.bulkAssignFarmers
       try {
-        // Call admin API to bulk assign farmers (this endpoint exists)
-        console.log('🔄 Calling adminAPI.bulkAssignFarmers...');
-        const response = await adminAPI.bulkAssignFarmers(farmerIds, employeeId);
+        console.log('🔄 Strategy 1: Calling superAdminAPI.bulkAssignFarmers...');
+        const response = await superAdminAPI.bulkAssignFarmers(farmerIds, employeeId);
         console.log('✅ Bulk assignment response:', response);
+        assignmentSuccessful = true;
       } catch (bulkError) {
-        console.log('❌ Bulk assign failed, trying individual assignments...', bulkError);
-        // Fallback to individual assignments
-        for (const farmerId of farmerIds) {
+        console.log('❌ Strategy 1 failed:', bulkError);
+        
+        // Strategy 2: Try adminAPI.bulkAssignFarmers
+        try {
+          console.log('🔄 Strategy 2: Calling adminAPI.bulkAssignFarmers...');
+          const response = await adminAPI.bulkAssignFarmers(farmerIds, employeeId);
+          console.log('✅ Admin bulk assignment response:', response);
+          assignmentSuccessful = true;
+        } catch (adminBulkError) {
+          console.log('❌ Strategy 2 failed:', adminBulkError);
+          
+          // Strategy 3: Try individual assignments via superAdminAPI
           try {
-            console.log('🔄 Assigning individual farmer:', farmerId);
-            await adminAPI.assignFarmer(farmerId, employeeId);
-            console.log('✅ Individual assignment successful for farmer:', farmerId);
+            console.log('🔄 Strategy 3: Trying individual assignments via superAdminAPI...');
+            for (const farmerId of farmerIds) {
+              console.log('🔄 Assigning individual farmer:', farmerId);
+              await superAdminAPI.assignFarmer(farmerId, employeeId);
+              console.log('✅ Individual assignment successful for farmer:', farmerId);
+            }
+            assignmentSuccessful = true;
           } catch (individualError) {
-            console.error(`❌ Failed to assign farmer ${farmerId}:`, individualError);
+            console.log('❌ Strategy 3 failed:', individualError);
+            
+            // Strategy 4: Try individual assignments via adminAPI
+            try {
+              console.log('🔄 Strategy 4: Trying individual assignments via adminAPI...');
+              for (const farmerId of farmerIds) {
+                console.log('🔄 Assigning individual farmer:', farmerId);
+                await adminAPI.assignFarmer(farmerId, employeeId);
+                console.log('✅ Individual assignment successful for farmer:', farmerId);
+              }
+              assignmentSuccessful = true;
+            } catch (adminIndividualError) {
+              console.error('❌ All assignment strategies failed:', adminIndividualError);
+              throw new Error('All assignment methods failed. Please check backend connectivity.');
+            }
           }
         }
       }
+      
+             if (!assignmentSuccessful) {
+         throw new Error('All assignment methods failed. Please check backend connectivity.');
+       }
       
       // Refresh farmers data from backend to get the real assignment status
       console.log('🔄 Refreshing farmers data from backend...');
@@ -652,11 +656,8 @@ const SuperAdminDashboard = () => {
         }
         setFarmers(refreshedFarmers);
         
-        // Force a complete page refresh after 2 seconds to ensure data persistence
-        setTimeout(() => {
-          console.log('🔄 Force refreshing page to ensure data persistence...');
-          window.location.reload();
-        }, 2000);
+        // Show success message and close the assignment interface
+        console.log('✅ Assignment completed successfully!');
       } catch (refreshError) {
         console.error('❌ Failed to refresh farmers data:', refreshError);
         // Fallback to local state update if refresh fails
@@ -898,55 +899,106 @@ const SuperAdminDashboard = () => {
                       Welcome back! Here's what's happening with your agricultural data.
                     </p>
                   </div>
-                  <div className="overview-actions">
-                    <button className="action-btn refresh">
-                      <i className="fas fa-sync-alt"></i>
-                      Refresh
-                    </button>
-                    <button className="action-btn today">Today</button>
-                    <button className="action-btn month">This Month</button>
-                    <button className="action-btn year">This Year</button>
-                  </div>
+                                     <div className="overview-actions">
+                     <button 
+                       className={`action-btn refresh ${timeFilter === 'all' ? 'active' : ''}`}
+                       onClick={() => {
+                         console.log('🔄 Refresh clicked - showing all data');
+                         setTimeFilter('all');
+                       }}
+                     >
+                       <i className="fas fa-sync-alt"></i>
+                       Refresh
+                     </button>
+                     <button 
+                       className={`action-btn today ${timeFilter === 'today' ? 'active' : ''}`}
+                       onClick={() => {
+                         console.log('📅 Today filter clicked');
+                         setTimeFilter('today');
+                       }}
+                     >
+                       Today
+                     </button>
+                     <button 
+                       className={`action-btn month ${timeFilter === 'month' ? 'active' : ''}`}
+                       onClick={() => {
+                         console.log('📅 This Month filter clicked');
+                         setTimeFilter('month');
+                       }}
+                     >
+                       This Month
+                     </button>
+                     <button 
+                       className={`action-btn year ${timeFilter === 'year' ? 'active' : ''}`}
+                       onClick={() => {
+                         console.log('📅 This Year filter clicked');
+                         setTimeFilter('year');
+                       }}
+                     >
+                       This Year
+                     </button>
+                   </div>
                 </div>
 
-                {/* Stats Cards */}
-                <div className="stats-grid">
-                  <div className="stats-card">
-                    <div className="stats-icon farmers">
-                      <i className="fas fa-users"></i>
-                    </div>
-                    <div className="stats-title">FARMERS</div>
-                    <div className="stats-value">{stats.totalFarmers}</div>
-                    <div className="stats-change positive">
-                      <i className="fas fa-arrow-up"></i>
-                      +12.4%
-                    </div>
-                  </div>
+                                 {/* Stats Cards */}
+                 <div className="stats-grid">
+                   <div className="stats-card">
+                     <div className="stats-icon farmers">
+                       <i className="fas fa-users"></i>
+                     </div>
+                     <div className="stats-title">FARMERS</div>
+                     <div className="stats-value">{stats.totalFarmers}</div>
+                     <div className="stats-change positive">
+                       <i className="fas fa-arrow-up"></i>
+                       +12.4%
+                     </div>
+                     {timeFilter !== 'all' && (
+                       <div className="stats-period-indicator">
+                         {timeFilter === 'today' && '📅 Today'}
+                         {timeFilter === 'month' && '📅 This Month'}
+                         {timeFilter === 'year' && '📅 This Year'}
+                       </div>
+                     )}
+                   </div>
 
-                  <div className="stats-card">
-                    <div className="stats-icon employees">
-                      <i className="fas fa-user-tie"></i>
-                    </div>
-                    <div className="stats-title">EMPLOYEES</div>
-                    <div className="stats-value">{stats.totalEmployees}</div>
-                    <div className="stats-change negative">
-                      <i className="fas fa-arrow-down"></i>
-                      -3.0%
-                    </div>
-                  </div>
+                   <div className="stats-card">
+                     <div className="stats-icon employees">
+                       <i className="fas fa-user-tie"></i>
+                     </div>
+                     <div className="stats-title">EMPLOYEES</div>
+                     <div className="stats-value">{stats.totalEmployees}</div>
+                     <div className="stats-change negative">
+                       <i className="fas fa-arrow-down"></i>
+                       -3.0%
+                     </div>
+                     {timeFilter !== 'all' && (
+                       <div className="stats-period-indicator">
+                         {timeFilter === 'today' && '📅 Today'}
+                         {timeFilter === 'month' && '📅 This Month'}
+                         {timeFilter === 'year' && '📅 This Year'}
+                       </div>
+                     )}
+                   </div>
 
-                  <div className="stats-card">
-                    <div className="stats-icon fpo">
-                      <i className="fas fa-building"></i>
-                    </div>
-                    <div className="stats-title">FPO</div>
-                    <div className="stats-value">{stats.totalFPO}</div>
-                    <div className="stats-change neutral">
-                      <i className="fas fa-minus"></i>
-                      +0.0%
-                    </div>
-                  </div>
-                </div>
+                   <div className="stats-card">
+                     <div className="stats-icon fpo">
+                       <i className="fas fa-building"></i>
+                     </div>
+                     <div className="stats-title">FPO</div>
+                     <div className="stats-value">{stats.totalFPO}</div>
+                     <div className="stats-change neutral">
+                       <i className="fas fa-minus"></i>
+                       +0.0%
+                     </div>
+                     {timeFilter !== 'all' && (
+                       <div className="stats-period-indicator">
+                         {timeFilter === 'today' && '📅 Today'}
+                         {timeFilter === 'month' && '📅 This Month'}
+                         {timeFilter === 'year' && '📅 This Year'}
+                       </div>
+                     )}
+                   </div>
+                 </div>
 
                 {/* Bottom Sections */}
                 <div className="bottom-sections">
@@ -981,26 +1033,47 @@ const SuperAdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Quick Actions */}
-                  <div className="section-card">
-                    <div className="section-header">
-                      <h3 className="section-title">Quick Actions</h3>
-                    </div>
-                    <div className="quick-actions-grid">
-                      <button className="quick-action-btn primary">
-                        <i className="fas fa-user-plus"></i>
-                        Add New Farmer
-                      </button>
-                      <button className="quick-action-btn secondary">
-                        <i className="fas fa-user-tie"></i>
-                        Add Employee
-                      </button>
-                      <button className="quick-action-btn info">
-                        <i className="fas fa-chart-bar"></i>
-                        Generate Report
-                      </button>
-                    </div>
-                  </div>
+                                     {/* Quick Actions */}
+                   <div className="section-card">
+                     <div className="section-header">
+                       <h3 className="section-title">Quick Actions</h3>
+                     </div>
+                     <div className="quick-actions-grid">
+                       <button 
+                         className="quick-action-btn primary"
+                         onClick={() => {
+                           console.log('🔄 Quick Action: Add New Farmer clicked');
+                           setActiveTab('farmers');
+                           setEditingFarmer(null);
+                           setShowFarmerForm(true);
+                         }}
+                       >
+                         <i className="fas fa-user-plus"></i>
+                         Add New Farmer
+                       </button>
+                       <button 
+                         className="quick-action-btn secondary"
+                         onClick={() => {
+                           console.log('🔄 Quick Action: Add Employee clicked');
+                           setActiveTab('employees');
+                           setShowEmployeeRegistration(true);
+                         }}
+                       >
+                         <i className="fas fa-user-tie"></i>
+                         Add Employee
+                       </button>
+                       <button 
+                         className="quick-action-btn info"
+                         onClick={() => {
+                           console.log('🔄 Quick Action: Generate Report clicked');
+                           alert('Report generation feature coming soon!');
+                         }}
+                       >
+                         <i className="fas fa-chart-bar"></i>
+                         Generate Report
+                       </button>
+                     </div>
+                   </div>
                 </div>
               </div>
             </>
@@ -1138,16 +1211,48 @@ const SuperAdminDashboard = () => {
                         <i className="fas fa-plus"></i>
                         Add Farmer
                       </button>
-                      <button className="action-btn secondary" onClick={() => {
-                        console.log('🔍 Assign Farmers button clicked');
-                        console.log('🔍 Total farmers:', farmers.length);
-                        console.log('🔍 Farmers with assignments:', farmers.filter(f => f.assignedEmployee && f.assignedEmployee !== 'Not Assigned' && f.assignedEmployee !== 'N/A').length);
-                        console.log('🔍 Available employees:', employees.length);
-                        setShowAssignmentInline(true);
-                      }}>
-                        <i className="fas fa-user-plus"></i>
-                        Assign Farmers
-                      </button>
+                                             <button 
+                         className="action-btn secondary" 
+                         onClick={() => {
+                           console.log('🔍 Assign Farmers button clicked');
+                           console.log('🔍 Current showAssignmentInline state:', showAssignmentInline);
+                           console.log('🔍 Total farmers:', farmers.length);
+                           console.log('🔍 Available employees:', employees.length);
+                           console.log('🔍 Farmers without assignments:', farmers.filter(f => !f.assignedEmployee || f.assignedEmployee === 'Not Assigned' || f.assignedEmployee === null || f.assignedEmployee === undefined || f.assignedEmployee === '').length);
+                           
+                           // Set the state to show assignment inline
+                           setShowAssignmentInline(true);
+                           console.log('🔍 Set showAssignmentInline to true');
+                         }}
+                         style={{
+                           background: '#3b82f6',
+                           color: 'white',
+                           border: 'none',
+                           borderRadius: '8px',
+                           padding: '12px 24px',
+                           cursor: 'pointer',
+                           fontSize: '14px',
+                           fontWeight: '600',
+                           transition: 'all 0.2s ease',
+                           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                           display: 'flex',
+                           alignItems: 'center',
+                           gap: '8px'
+                         }}
+                         onMouseEnter={(e) => {
+                           e.target.style.background = '#2563eb';
+                           e.target.style.transform = 'translateY(-1px)';
+                           e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+                         }}
+                         onMouseLeave={(e) => {
+                           e.target.style.background = '#3b82f6';
+                           e.target.style.transform = 'translateY(0)';
+                           e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                         }}
+                       >
+                         <i className="fas fa-user-plus"></i>
+                         Assign Farmers
+                       </button>
                       <button 
                         className="action-btn success"
                         onClick={handleManualRefresh}
@@ -1364,14 +1469,17 @@ const SuperAdminDashboard = () => {
                 </div>
               ) : null}
 
-              {showAssignmentInline && (
-                <AssignmentInline 
-                  farmers={farmers.filter(f => !f.assignedEmployee || f.assignedEmployee === 'Not Assigned' || f.assignedEmployee === null || f.assignedEmployee === undefined || f.assignedEmployee === '')}
-                  employees={employees}
-                  onBack={() => setShowAssignmentInline(false)}
-                  onAssign={handleAssignFarmers}
-                />
-              )}
+                             {showAssignmentInline && (
+                 <AssignmentInline 
+                   farmers={farmers.filter(f => !f.assignedEmployee || f.assignedEmployee === 'Not Assigned' || f.assignedEmployee === null || f.assignedEmployee === undefined || f.assignedEmployee === '')}
+                   employees={employees}
+                   onBack={() => {
+                     console.log('🔍 Back button clicked');
+                     setShowAssignmentInline(false);
+                   }}
+                   onAssign={handleAssignFarmers}
+                 />
+               )}
 
               {viewingFarmer && (
                 <ViewFarmer 

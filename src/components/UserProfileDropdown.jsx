@@ -288,9 +288,26 @@ const UserProfileDropdown = ({ variant = 'default', onShowChangePassword, onShow
   // Render default variant (standard dropdown)
   return (
     <div className="user-profile-dropdown" ref={dropdownRef}>
+      {/* Debug indicator */}
+      <div style={{ 
+        position: 'absolute', 
+        top: '-30px', 
+        right: '0', 
+        background: 'blue', 
+        color: 'white', 
+        padding: '5px', 
+        fontSize: '12px',
+        zIndex: 10001
+      }}>
+        DROPDOWN RENDERING
+      </div>
+      
       <div
         className="user-profile-trigger"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          console.log('UserProfileDropdown clicked, current isOpen:', isOpen);
+          setIsOpen(!isOpen);
+        }}
       >
         <div className="user-avatar">
           {getAvatarInitials()}

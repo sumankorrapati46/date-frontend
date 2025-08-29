@@ -63,6 +63,9 @@ const AdminDashboard = () => {
     employeeFilter: ''
   });
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  
+  // Add time filter state
+  const [timeFilter, setTimeFilter] = useState('all'); // 'all', 'today', 'month', 'year'
 
   // Greeting function based on time of day
   const getGreeting = () => {
@@ -77,6 +80,22 @@ const AdminDashboard = () => {
       return 'Good Night';
     }
   };
+  
+  // Random greeting content
+  const greetingVariants = [
+    { title: '🌞 Good Morning!', subtitle: 'Wishing you a bright and productive day ahead filled with positivity.' },
+    { title: '🌸 Hello & Warm Greetings!', subtitle: 'May your day be filled with joy, success, and wonderful moments.' },
+    { title: '🙌 Hi There!', subtitle: 'Hope you are doing well and everything is going smoothly on your end.' },
+    { title: '🌟 Season Greetings!', subtitle: 'Sending best wishes for peace, happiness, and good health.' },
+    { title: '🤝 Greetings of the Day!', subtitle: 'May this day bring you opportunities, growth, and good fortune.' }
+  ];
+
+  const [randomGreeting, setRandomGreeting] = useState(greetingVariants[0]);
+
+  useEffect(() => {
+    const idx = Math.floor(Math.random() * greetingVariants.length);
+    setRandomGreeting(greetingVariants[idx]);
+  }, []);
 
   // Load data from API
   useEffect(() => {
@@ -488,25 +507,58 @@ const AdminDashboard = () => {
   };
 
   const getStats = () => {
-    const totalFarmers = farmers?.length || 0;
-    const totalEmployees = employees?.length || 0;
-    const unassignedFarmers = (farmers || []).filter(f => !f.assignedEmployee || f.assignedEmployee === 'Not Assigned').length;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    // Helper function to check if a date is within the specified period
+    const isWithinPeriod = (dateString, period) => {
+      if (!dateString) return false;
+      const date = new Date(dateString);
+      
+      switch (period) {
+        case 'today':
+          return date >= today;
+        case 'month':
+          return date >= startOfMonth;
+        case 'year':
+          return date >= startOfYear;
+        default:
+          return true; // 'all' period
+      }
+    };
+
+    // Filter data based on time period
+    const filteredFarmers = (farmers || []).filter(farmer => {
+      const createdDate = farmer.createdAt || farmer.created_at || farmer.registrationDate || farmer.assignedDate;
+      return isWithinPeriod(createdDate, timeFilter);
+    });
+
+    const filteredEmployees = (employees || []).filter(employee => {
+      const createdDate = employee.createdAt || employee.created_at || employee.registrationDate;
+      return isWithinPeriod(createdDate, timeFilter);
+    });
+
+    const totalFarmers = timeFilter === 'all' ? (farmers?.length || 0) : filteredFarmers.length;
+    const totalEmployees = timeFilter === 'all' ? (employees?.length || 0) : filteredEmployees.length;
+    const unassignedFarmers = filteredFarmers.filter(f => !f.assignedEmployee || f.assignedEmployee === 'Not Assigned').length;
     
     // Handle different KYC status formats
-    const pendingKYC = (farmers || []).filter(f => 
+    const pendingKYC = filteredFarmers.filter(f => 
       f.kycStatus === 'PENDING' || f.kycStatus === 'pending' || 
       f.kycStatus === 'NOT_STARTED' || f.kycStatus === 'not_started'
     ).length;
     
-    const approvedKYC = (farmers || []).filter(f => 
+    const approvedKYC = filteredFarmers.filter(f => 
       f.kycStatus === 'APPROVED' || f.kycStatus === 'approved'
     ).length;
     
-    const referBackKYC = (farmers || []).filter(f => 
+    const referBackKYC = filteredFarmers.filter(f => 
       f.kycStatus === 'REFER_BACK' || f.kycStatus === 'refer_back'
     ).length;
     
-    const rejectedKYC = (farmers || []).filter(f => 
+    const rejectedKYC = filteredFarmers.filter(f => 
       f.kycStatus === 'REJECTED' || f.kycStatus === 'rejected'
     ).length;
 
@@ -526,7 +578,8 @@ const AdminDashboard = () => {
       pendingKYC,
       approvedKYC,
       referBackKYC,
-      rejectedKYC
+      rejectedKYC,
+      timeFilter
     };
   };
 
@@ -757,35 +810,111 @@ const AdminDashboard = () => {
     return (
       <div className="overview-section">
         <div className="overview-header">
-          <h2 className="overview-title">Admin Dashboard Overview</h2>
-          <p className="overview-description">
-            Manage farmers, employees, and assignments efficiently.
-          </p>
+          <div>
+            <h2 className="overview-title">Admin Dashboard Overview</h2>
+            <p className="overview-description">
+              Manage farmers, employees, and assignments efficiently.
+            </p>
+          </div>
+          <div className="overview-actions">
+            <button 
+              className={`action-btn refresh ${timeFilter === 'all' ? 'active' : ''}`}
+              onClick={() => {
+                console.log('🔄 Refresh clicked - showing all data');
+                setTimeFilter('all');
+              }}
+            >
+              <i className="fas fa-sync-alt"></i>
+              Refresh
+            </button>
+            <button 
+              className={`action-btn today ${timeFilter === 'today' ? 'active' : ''}`}
+              onClick={() => {
+                console.log('📅 Today filter clicked');
+                setTimeFilter('today');
+              }}
+            >
+              Today
+            </button>
+            <button 
+              className={`action-btn month ${timeFilter === 'month' ? 'active' : ''}`}
+              onClick={() => {
+                console.log('📅 This Month filter clicked');
+                setTimeFilter('month');
+              }}
+            >
+              This Month
+            </button>
+            <button 
+              className={`action-btn year ${timeFilter === 'year' ? 'active' : ''}`}
+              onClick={() => {
+                console.log('📅 This Year filter clicked');
+                setTimeFilter('year');
+              }}
+            >
+              This Year
+            </button>
+          </div>
         </div>
 
         {/* Stats Cards */}
         <div className="stats-grid">
-          <StatsCard
-            title="FARMERS"
-            value={stats.totalFarmers}
-            change="+12.4%"
-            changeType="positive"
-            icon="👥"
-          />
-          <StatsCard
-            title="EMPLOYEES"
-            value={stats.totalEmployees}
-            change="-3.0%"
-            changeType="negative"
-            icon="👨‍💼"
-          />
-          <StatsCard
-            title="FPO"
-            value="0"
-            change="+0.0%"
-            changeType="neutral"
-            icon="🏢"
-          />
+          <div className="stats-card">
+            <div className="stats-icon farmers">
+              <i className="fas fa-users"></i>
+            </div>
+            <div className="stats-title">FARMERS</div>
+            <div className="stats-value">{stats.totalFarmers}</div>
+            <div className="stats-change positive">
+              <i className="fas fa-arrow-up"></i>
+              +12.4%
+            </div>
+            {timeFilter !== 'all' && (
+              <div className="stats-period-indicator">
+                {timeFilter === 'today' && '📅 Today'}
+                {timeFilter === 'month' && '📅 This Month'}
+                {timeFilter === 'year' && '📅 This Year'}
+              </div>
+            )}
+          </div>
+
+          <div className="stats-card">
+            <div className="stats-icon employees">
+              <i className="fas fa-user-tie"></i>
+            </div>
+            <div className="stats-title">EMPLOYEES</div>
+            <div className="stats-value">{stats.totalEmployees}</div>
+            <div className="stats-change negative">
+              <i className="fas fa-arrow-down"></i>
+              -3.0%
+            </div>
+            {timeFilter !== 'all' && (
+              <div className="stats-period-indicator">
+                {timeFilter === 'today' && '📅 Today'}
+                {timeFilter === 'month' && '📅 This Month'}
+                {timeFilter === 'year' && '📅 This Year'}
+              </div>
+            )}
+          </div>
+
+          <div className="stats-card">
+            <div className="stats-icon fpo">
+              <i className="fas fa-building"></i>
+            </div>
+            <div className="stats-title">FPO</div>
+            <div className="stats-value">0</div>
+            <div className="stats-change neutral">
+              <i className="fas fa-minus"></i>
+              +0.0%
+            </div>
+            {timeFilter !== 'all' && (
+              <div className="stats-period-indicator">
+                {timeFilter === 'today' && '📅 Today'}
+                {timeFilter === 'month' && '📅 This Month'}
+                {timeFilter === 'year' && '📅 This Year'}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Recent Activities Section */}
@@ -825,13 +954,33 @@ const AdminDashboard = () => {
               <h3>Quick Actions</h3>
             </div>
             <div className="quick-actions-grid">
-              <button className="quick-action-btn primary">
-                <i className="fas fa-users"></i>
-                View Users
+              <button 
+                className="quick-action-btn primary"
+                onClick={() => {
+                  setActiveTab('farmers');
+                  setEditingFarmer(null); // Clear any existing farmer being edited
+                  setShowFarmerForm(true); // Show the farmer registration form
+                }}
+              >
+                <i className="fas fa-user-plus"></i>
+                Add New Farmer
               </button>
-              <button className="quick-action-btn secondary">
-                <i className="fas fa-tractor"></i>
-                View Farmers
+              <button 
+                className="quick-action-btn secondary"
+                onClick={() => {
+                  setActiveTab('employees');
+                  setShowEmployeeRegistration(true); // Show the employee registration form
+                }}
+              >
+                <i className="fas fa-user-tie"></i>
+                Add Employee
+              </button>
+              <button 
+                className="quick-action-btn info"
+                onClick={() => alert('Generate Report functionality coming soon!')}
+              >
+                <i className="fas fa-chart-bar"></i>
+                Generate Report
               </button>
             </div>
           </div>
@@ -1398,62 +1547,152 @@ const AdminDashboard = () => {
         <div className="employee-stats">
           <h3>Employee KYC Progress</h3>
           <div className="employee-stats-grid">
-            {employees.map(employee => {
-              // Calculate real stats from farmers data
-              const assignedFarmers = (farmers || []).filter(f => 
-                f.assignedEmployee === employee.name || 
-                f.assignedEmployee === employee.contactNumber ||
-                f.assignedEmployeeId === employee.id
-              );
-              
-              const approvedCount = assignedFarmers.filter(f => 
-                f.kycStatus === 'APPROVED' || f.kycStatus === 'approved'
-              ).length;
-              
-              const pendingCount = assignedFarmers.filter(f => 
-                f.kycStatus === 'PENDING' || f.kycStatus === 'pending' || 
-                f.kycStatus === 'NOT_STARTED' || f.kycStatus === 'not_started'
-              ).length;
-              
-              const referBackCount = assignedFarmers.filter(f => 
-                f.kycStatus === 'REFER_BACK' || f.kycStatus === 'refer_back'
-              ).length;
-              
-              const rejectedCount = assignedFarmers.filter(f => 
-                f.kycStatus === 'REJECTED' || f.kycStatus === 'rejected'
-              ).length;
-              
-              return (
-                <div key={employee.id} className="employee-stat-card">
+            {employees.length > 0 ? (
+              employees.map(employee => {
+                // Calculate real stats from farmers data
+                const assignedFarmers = (farmers || []).filter(f => 
+                  f.assignedEmployee === employee.name || 
+                  f.assignedEmployee === employee.contactNumber ||
+                  f.assignedEmployeeId === employee.id
+                );
+                
+                const approvedCount = assignedFarmers.filter(f => 
+                  f.kycStatus === 'APPROVED' || f.kycStatus === 'approved'
+                ).length;
+                
+                const pendingCount = assignedFarmers.filter(f => 
+                  f.kycStatus === 'PENDING' || f.kycStatus === 'pending' || 
+                  f.kycStatus === 'NOT_STARTED' || f.kycStatus === 'not_started'
+                ).length;
+                
+                const referBackCount = assignedFarmers.filter(f => 
+                  f.kycStatus === 'REFER_BACK' || f.kycStatus === 'refer_back'
+                ).length;
+                
+                const rejectedCount = assignedFarmers.filter(f => 
+                  f.kycStatus === 'REJECTED' || f.kycStatus === 'rejected'
+                ).length;
+                
+                return (
+                  <div key={employee.id} className="employee-stat-card">
+                    <div className="employee-info">
+                      <h4>{employee.name}</h4>
+                      <p>{employee.designation} - {employee.district}</p>
+                    </div>
+                    <div className="employee-kyc-stats">
+                      <div className="kyc-stat">
+                        <span className="stat-number">{assignedFarmers.length}</span>
+                        <span className="stat-label">Total Assigned</span>
+                      </div>
+                      <div className="kyc-stat">
+                        <span className="stat-number approved">{approvedCount}</span>
+                        <span className="stat-label">Approved</span>
+                      </div>
+                      <div className="kyc-stat">
+                        <span className="stat-number pending">{pendingCount}</span>
+                        <span className="stat-label">Pending</span>
+                      </div>
+                      <div className="kyc-stat">
+                        <span className="stat-number refer-back">{referBackCount}</span>
+                        <span className="stat-label">Refer Back</span>
+                      </div>
+                      <div className="kyc-stat">
+                        <span className="stat-number rejected">{rejectedCount}</span>
+                        <span className="stat-label">Rejected</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              // Fallback cards when no employees data
+              <>
+                <div className="employee-stat-card">
                   <div className="employee-info">
-                    <h4>{employee.name}</h4>
-                    <p>{employee.designation} - {employee.district}</p>
+                    <h4>Sample KYC Officer</h4>
+                    <p>KYC Officer - Hyderabad</p>
                   </div>
                   <div className="employee-kyc-stats">
                     <div className="kyc-stat">
-                      <span className="stat-number">{assignedFarmers.length}</span>
+                      <span className="stat-number">0</span>
                       <span className="stat-label">Total Assigned</span>
                     </div>
                     <div className="kyc-stat">
-                      <span className="stat-number approved">{approvedCount}</span>
+                      <span className="stat-number approved">0</span>
                       <span className="stat-label">Approved</span>
                     </div>
                     <div className="kyc-stat">
-                      <span className="stat-number pending">{pendingCount}</span>
+                      <span className="stat-number pending">0</span>
                       <span className="stat-label">Pending</span>
                     </div>
                     <div className="kyc-stat">
-                      <span className="stat-number refer-back">{referBackCount}</span>
+                      <span className="stat-number refer-back">0</span>
                       <span className="stat-label">Refer Back</span>
                     </div>
                     <div className="kyc-stat">
-                      <span className="stat-number rejected">{rejectedCount}</span>
+                      <span className="stat-number rejected">0</span>
                       <span className="stat-label">Rejected</span>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+                <div className="employee-stat-card">
+                  <div className="employee-info">
+                    <h4>Sample KYC Officer 2</h4>
+                    <p>KYC Officer - Bangalore</p>
+                  </div>
+                  <div className="employee-kyc-stats">
+                    <div className="kyc-stat">
+                      <span className="stat-number">0</span>
+                      <span className="stat-label">Total Assigned</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number approved">0</span>
+                      <span className="stat-label">Approved</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number pending">0</span>
+                      <span className="stat-label">Pending</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number refer-back">0</span>
+                      <span className="stat-label">Refer Back</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number rejected">0</span>
+                      <span className="stat-label">Rejected</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="employee-stat-card">
+                  <div className="employee-info">
+                    <h4>Sample KYC Officer 3</h4>
+                    <p>KYC Officer - Mumbai</p>
+                  </div>
+                  <div className="employee-kyc-stats">
+                    <div className="kyc-stat">
+                      <span className="stat-number">0</span>
+                      <span className="stat-label">Total Assigned</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number approved">0</span>
+                      <span className="stat-label">Approved</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number pending">0</span>
+                      <span className="stat-label">Pending</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number refer-back">0</span>
+                      <span className="stat-label">Refer Back</span>
+                    </div>
+                    <div className="kyc-stat">
+                      <span className="stat-number rejected">0</span>
+                      <span className="stat-label">Rejected</span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -1493,133 +1732,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="dashboard">
-      {/* USER ICON - ALWAYS VISIBLE */}
-      <div style={{
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        background: '#15803d',
-        color: 'white',
-        padding: '12px 16px',
-        borderRadius: '8px',
-        zIndex: '10000',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        border: '2px solid #22c55e',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        boxShadow: '0 4px 12px rgba(21, 128, 61, 0.3)'
-      }}
-      onClick={toggleUserDropdown}
-      >
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          background: '#22c55e',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '16px',
-          fontWeight: 'bold'
-        }}>
-          {user?.name?.charAt(0) || 'U'}
-        </div>
-        <span>{user?.name || 'User'}</span>
-        <i className={`fas fa-chevron-down ${showUserDropdown ? 'fa-chevron-up' : ''}`}></i>
-      </div>
-      
-      {/* USER DROPDOWN MENU */}
-      {showUserDropdown && (
-        <div style={{
-          position: 'fixed',
-          top: '80px',
-          right: '20px',
-          background: '#ffffff',
-          border: '2px solid #15803d',
-          borderRadius: '12px',
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-          zIndex: '9999',
-          width: '280px',
-          padding: '16px'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            paddingBottom: '12px',
-            borderBottom: '1px solid #e5e7eb',
-            marginBottom: '12px'
-          }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              background: '#15803d',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              color: 'white'
-            }}>
-              {user?.name?.charAt(0) || 'U'}
-            </div>
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#1f2937' }}>
-                {user?.name || 'User'}
-              </div>
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                {user?.email || 'user@example.com'}
-              </div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button 
-              onClick={handleChangePassword}
-              style={{
-                background: '#f8fafc',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                padding: '12px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                color: '#374151'
-              }}
-            >
-              <i className="fas fa-key" style={{ color: '#15803d' }}></i>
-              Change Password
-            </button>
-            <button 
-              onClick={handleLogout}
-              style={{
-                background: '#fef2f2',
-                border: '1px solid #fecaca',
-                borderRadius: '8px',
-                padding: '12px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                color: '#dc2626'
-              }}
-            >
-              <i className="fas fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        </div>
-      )}
-      
-      {/* Top Bar */}
-      <div className="top-bar"></div>
-      
       {/* Header */}
       <div className="dashboard-header">
         <div className="header-left">
@@ -1632,31 +1744,19 @@ const AdminDashboard = () => {
           <div className="user-profile-dropdown">
             <div className="user-profile-trigger" onClick={toggleUserDropdown}>
               <div className="user-avatar">
-                {user?.name?.charAt(0) || 'U'}
+                {user?.name?.charAt(0) || 'A'}
               </div>
-              <span className="user-email">{user?.email || 'user@example.com'}</span>
+              <span className="user-email">{user?.email || 'admin@example.com'}</span>
               <i className={`fas fa-chevron-down dropdown-arrow ${showUserDropdown ? 'rotated' : ''}`}></i>
             </div>
-            <div className="user-dropdown-menu" style={{ 
-              display: showUserDropdown ? 'block' : 'none',
-              position: 'absolute',
-              top: '100%',
-              right: '0',
-              width: '280px',
-              background: '#ffffff',
-              border: '2px solid #15803d',
-              borderRadius: '12px',
-              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-              zIndex: '9999',
-              marginTop: '8px'
-            }}>
+            <div className={`user-dropdown-menu ${showUserDropdown ? 'show' : ''}`}>
               <div className="dropdown-header">
                 <div className="user-avatar-large">
-                  {user?.name?.charAt(0) || 'U'}
+                  {user?.name?.charAt(0) || 'A'}
                 </div>
                 <div className="user-details">
-                  <div className="user-name-large">{user?.name || 'User'}</div>
-                  <div className="user-email">{user?.email || 'user@example.com'}</div>
+                  <div className="user-name-large">{user?.name || 'Admin'}</div>
+                  <div className="user-email">{user?.email || 'admin@example.com'}</div>
                 </div>
               </div>
               <div className="dropdown-actions">
@@ -1677,27 +1777,25 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <div className="dashboard-sidebar">
         <div className="sidebar-header">
-          <h2>DATE Digital Agristack</h2>
-          <p>Admin Dashboard</p>
+          <h2 className="sidebar-welcome">Welcome!!!</h2>
+          <div className="sidebar-role">Admin</div>
         </div>
         
         <div className="sidebar-nav">
-
           <div 
             className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            <i className="fas fa-chart-bar"></i>
-            <span>Overview</span>
+            <i className="fas fa-th-large"></i>
+            <span>Dashboard Overview</span>
           </div>
-          
 
           <div 
-            className={`nav-item ${activeTab === 'kyc-overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('kyc-overview')}
+            className={`nav-item ${activeTab === 'registration' ? 'active' : ''}`}
+            onClick={() => setActiveTab('registration')}
           >
-            <i className="fas fa-clipboard-check"></i>
-            <span>KYC Overview</span>
+            <i className="fas fa-user-plus"></i>
+            <span>Registration</span>
           </div>
           
           <div 
@@ -1717,11 +1815,11 @@ const AdminDashboard = () => {
           </div>
 
           <div 
-            className={`nav-item ${activeTab === 'registration' ? 'active' : ''}`}
-            onClick={() => setActiveTab('registration')}
+            className={`nav-item ${activeTab === 'kyc-overview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('kyc-overview')}
           >
-            <i className="fas fa-user-plus"></i>
-            <span>Registration</span>
+            <i className="fas fa-clipboard-check"></i>
+            <span>KYC Overview</span>
           </div>
 
           <div 
@@ -1736,37 +1834,33 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <div className="dashboard-main">
-        {/* Top Header Bar */}
-        <div className="top-header"></div>
-
-        {/* Dashboard Header */}
-        <div className="dashboard-header">
-          <div className="header-left">
-            <div className="greeting-section">
-              <h2 className="greeting-text">{getGreeting()}, {user?.name || 'Admin'}! 👋</h2>
-              <p className="greeting-time">{new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}</p>
-            </div>
-            <h1 className="header-title">Admin Dashboard</h1>
-            <p className="header-subtitle">Welcome back! Here's what's happening with your agricultural data.</p>
-          </div>
-          <div className="header-right">
-            <div className="filter-buttons">
-              <button className="filter-btn">Refresh</button>
-              <button className="filter-btn active">Today</button>
-              <button className="filter-btn">This Month</button>
-              <button className="filter-btn">This Year</button>
-            </div>
-          </div>
-        </div>
-
         {/* Dashboard Content */}
         <div className="dashboard-content">
-          {activeTab === 'overview' && renderOverview()}
+          {activeTab === 'overview' && (
+            <>
+              {/* Greeting Banner - Only for Dashboard Overview */}
+              <div className="greeting-banner">
+                <div className="greeting-left">
+                  <div className="greeting-title">{randomGreeting.title}</div>
+                  <div className="greeting-subtitle">{randomGreeting.subtitle}</div>
+                </div>
+                <div className="greeting-right">
+                  <span className="greeting-date">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+              </div>
+              
+              {/* Welcome Section - Only for Dashboard Overview */}
+              <div className="welcome-section">
+                <h1 className="welcome-title">Welcome to DATE Digital Agristack!</h1>
+                <p className="welcome-subtitle">
+                  Empowering your agricultural journey with data-driven insights and seamless management. 
+                  Explore your dashboard below.
+                </p>
+              </div>
+              
+              {renderOverview()}
+            </>
+          )}
           {activeTab === 'kyc-overview' && renderKYCOverview()}
           {activeTab === 'farmers' && renderFarmers()}
           {activeTab === 'employees' && renderEmployees()}

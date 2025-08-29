@@ -88,8 +88,8 @@ const Login = () => {
       return;
     }
     try {
-      // Backend expects email/username as "email"
-      const loginData = { email: userName, password };
+      // Backend expects userName
+      const loginData = { userName, password };
       const response = await authAPI.login(loginData);
       console.log('Login - Full login response:', response);
       console.log('Login - Login response data keys:', Object.keys(response || {}));
