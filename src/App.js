@@ -2,10 +2,13 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
+import HomeScreen from './pages/HomeScreen';
 import AdminDashboard from './pages/AdminDashboard';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import FarmerDashboard from './pages/FarmerDashboard';
+import AboutScreen from './pages/AboutScreen';
+import MenuScreen from './pages/MenuScreen';
 
 import FarmerRegistration from './pages/FarmerRegistration';
 import EmployeeRegistration from './pages/EmployeeRegistration';
@@ -33,6 +36,13 @@ function App() {
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/change-userid" element={<ChangeUserId />} />
             
+            {/* Home Route */}
+            <Route path="/" element={<HomeScreen />} />
+            
+            {/* About and Menu Routes */}
+            <Route path="/about" element={<AboutScreen />} />
+            <Route path="/menu" element={<MenuScreen />} />
+            
             {/* Registration Routes */}
             <Route path="/farmer/registration" element={<FarmerRegistration />} />
             <Route path="/employee/registration" element={<EmployeeRegistration />} />
@@ -50,8 +60,7 @@ function App() {
 
             
             {/* Default Routes */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </Router>

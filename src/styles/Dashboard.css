@@ -515,7 +515,7 @@
 
 /* Registration Section - Full Width with Scrolling */
 .registration-section {
-  background: white;
+  background: #b2f4d594;
   border-radius: 20px;
   padding: 32px;
   margin-bottom: 32px;
@@ -527,7 +527,7 @@
   margin-right: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 800px;
+  max-height: 950px;
 }
 
 /* Custom scrollbar for registration sections */
@@ -604,8 +604,8 @@
 }
 
 .action-btn.secondary {
-  background: #f8fafc;
-  color: #374151;
+  background: rgba(0, 0, 0, 0.3);
+  color: #000012;
   border-color: #e2e8f0;
 }
 
@@ -616,7 +616,7 @@
 }
 
 .action-btn.success {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  background: linear-gradient(135deg, #c2ed10 0%, #acb910 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
 }
@@ -1300,6 +1300,20 @@
   max-height: 600px;
 }
 
+/* Table Scroll Wrapper - For inline table scrolling */
+.table-scroll-wrapper {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin: 24px 0;
+  padding: 10px;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  max-height: 600px;
+}
+
 /* Custom scrollbar for data table container */
 .data-table-container::-webkit-scrollbar {
   width: 8px;
@@ -1326,11 +1340,71 @@
   background: #ffffff;
   font-size: 14px;
   line-height: 1.5;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: auto;
+  display: block;
+}
+
+/* Table scrolling container */
+.data-table thead,
+.data-table tbody,
+.data-table tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.data-table thead {
+  width: calc(100% - 8px); /* Account for scrollbar */
+}
+
+/* Custom scrollbar for data table */
+.data-table::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.data-table::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.data-table::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  border-radius: 4px;
+}
+
+.data-table::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+}
+
+/* Custom scrollbar for table scroll wrapper */
+.table-scroll-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  border-radius: 4px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
 }
 
 /* Table Header - Modern Gradient */
 .data-table thead {
   background: linear-gradient(135deg, #15803d 0%, #16a34a 50%, #22c55e 100%);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .data-table th {
@@ -1872,7 +1946,7 @@
 
 /* Enhanced Table Container */
 .data-table-container {
-  padding: 0;
+  padding: 20px;
   margin: 32px 0;
 }
 
@@ -2583,6 +2657,7 @@
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
+  margin-top: 10px;
   overflow: hidden;
   transition: all 0.3s ease;
 }

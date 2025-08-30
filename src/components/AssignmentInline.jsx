@@ -16,11 +16,9 @@ const AssignmentInline = ({ farmers = [], employees = [], onBack, onAssign }) =>
   };
 
   const handleAssign = async () => {
-    console.log('🔍 Assign button clicked!');
+    console.log('🔍 Assign Farmers button clicked!');
     console.log('🔍 Selected Employee ID:', selectedEmployeeId);
     console.log('🔍 Selected Farmer IDs:', selectedFarmerIds);
-    console.log('🔍 Available employees:', employees);
-    console.log('🔍 Available farmers:', farmers);
     
     if (!selectedEmployeeId || selectedFarmerIds.length === 0) {
       alert('Please select an employee and at least one farmer');
@@ -71,79 +69,90 @@ const AssignmentInline = ({ farmers = [], employees = [], onBack, onAssign }) =>
           className="back-btn" 
           onClick={onBack}
           style={{
-            background: '#f3f4f6',
-            border: '1px solid #e5e7eb',
+            background: '#10b981',
+            border: '1px solid #059669',
             borderRadius: '8px',
             padding: '10px 16px',
             cursor: 'pointer',
-            color: '#111827',
+            color: 'white',
             fontSize: '14px',
             fontWeight: '500',
             transition: 'all 0.2s ease',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px'
+            gap: '6px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = '#e5e7eb';
-            e.target.style.borderColor = '#d1d5db';
+            e.target.style.background = '#059669';
+            e.target.style.borderColor = '#047857';
+            e.target.style.transform = 'translateY(-1px)';
+            e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = '#f3f4f6';
-            e.target.style.borderColor = '#e5e7eb';
+            e.target.style.background = '#10b981';
+            e.target.style.borderColor = '#059669';
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
           }}
         >
           ← Back to Farmers
         </button>
         <h2 style={{ margin: 0, flex: 1, textAlign: 'center' }}>Assign Farmers to Employee</h2>
         <div style={{ display: 'flex', gap: '8px' }}>
-                     <button 
-             onClick={handleAssign} 
-             disabled={isSubmitting} 
-             style={{ 
-               background: isSubmitting ? '#6b7280' : '#10b981', 
-               color: 'white', 
-               border: 'none', 
-               borderRadius: '8px', 
-               padding: '12px 24px', 
-               cursor: isSubmitting ? 'not-allowed' : 'pointer', 
-               fontSize: '14px',
-               fontWeight: '600',
-               transition: 'all 0.2s ease',
-               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-               minWidth: '140px',
-               display: 'flex',
-               alignItems: 'center',
-               justifyContent: 'center',
-               gap: '8px'
-             }}
-             onMouseEnter={(e) => {
-               if (!isSubmitting) {
-                 e.target.style.background = '#059669';
-                 e.target.style.transform = 'translateY(-1px)';
-                 e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
-               }
-             }}
-             onMouseLeave={(e) => {
-               if (!isSubmitting) {
-                 e.target.style.background = '#10b981';
-                 e.target.style.transform = 'translateY(0)';
-                 e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-               }
-             }}
-           >
-             {isSubmitting ? (
-               <>
-                 <i className="fas fa-spinner fa-spin"></i>
-                 Assigning...
-               </>
-             ) : (
-               <>
-                 <i className="fas fa-user-plus"></i>
-                 Assign Farmers
-               </>
-             )}
-           </button>
+          <button 
+            onClick={() => {
+              console.log('🔍 Assign Farmers button clicked!');
+              handleAssign();
+            }}
+            disabled={isSubmitting}
+            style={{
+              background: '#10b981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 24px',
+              cursor: isSubmitting ? 'not-allowed' : 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              minWidth: '140px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              position: 'relative',
+              zIndex: 9999,
+              pointerEvents: 'auto',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (!isSubmitting) {
+                e.target.style.background = '#059669';
+                e.target.style.transform = 'translateY(-1px)';
+                e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isSubmitting) {
+                e.target.style.background = '#10b981';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+              }
+            }}
+          >
+            {isSubmitting ? (
+              <>
+                <i className="fas fa-spinner fa-spin"></i>
+                Assigning...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-user-plus"></i>
+                Assign Farmers
+              </>
+            )}
+          </button>
         </div>
       </div>
 
@@ -168,28 +177,9 @@ const AssignmentInline = ({ farmers = [], employees = [], onBack, onAssign }) =>
             <h3>Select Farmers</h3>
             <div style={{ marginBottom: 12 }}>
               <button 
+                className="select-all-btn"
                 onClick={toggleSelectAll} 
                 type="button"
-                style={{
-                  background: '#3b82f6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = '#2563eb';
-                  e.target.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = '#3b82f6';
-                  e.target.style.transform = 'translateY(0)';
-                }}
               >
                 {selectedFarmerIds.length === farmers.length ? 'Deselect All' : 'Select All'}
               </button>

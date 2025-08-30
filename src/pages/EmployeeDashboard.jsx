@@ -470,79 +470,181 @@ const EmployeeDashboard = () => {
           </div>
         </div>
 
-        {/* KYC Progress Chart */}
-        <div className="kyc-progress-section">
-          <h3>KYC Progress Summary</h3>
-          <div className="kyc-progress-grid">
-            <div className="progress-card approved">
-              <div className="progress-circle">
-                <span className="progress-number">{stats.approved}</span>
-                <span className="progress-label">Approved</span>
+        {/* KYC Progress Chart - Modern Style */}
+        <div className="kyc-progress-section-modern">
+          <div className="section-header-modern">
+            <h3 className="section-title-modern">
+              <i className="fas fa-chart-pie"></i>
+              KYC Progress Summary
+            </h3>
+            <p className="section-subtitle-modern">Track your KYC verification progress</p>
+          </div>
+          <div className="kyc-progress-grid-modern" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '16px',
+            marginTop: '20px'
+          }}>
+            <div className="progress-card-modern approved" style={{
+              background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+              border: '2px solid #22c55e',
+              borderRadius: '12px',
+              padding: '16px',
+              boxShadow: '0 4px 12px rgba(34, 197, 94, 0.15)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              textAlign: 'center'
+            }}>
+              <div className="progress-icon-modern" style={{
+                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 8px auto',
+                boxShadow: '0 2px 8px rgba(34, 197, 94, 0.3)'
+              }}>
+                <i className="fas fa-check" style={{ color: 'white', fontSize: '16px' }}></i>
               </div>
+              <div className="progress-number-modern" style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#15803d',
+                marginBottom: '4px'
+              }}>{stats.approved}</div>
+              <div className="progress-label-modern" style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#16a34a',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>Approved</div>
             </div>
-            <div className="progress-card pending">
-              <div className="progress-circle">
-                <span className="progress-number">{stats.pending}</span>
-                <span className="progress-label">Pending</span>
+            
+            <div className="progress-card-modern pending" style={{
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+              border: '2px solid #f59e0b',
+              borderRadius: '12px',
+              padding: '16px',
+              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.15)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              textAlign: 'center'
+            }}>
+              <div className="progress-icon-modern" style={{
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 8px auto',
+                boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)'
+              }}>
+                <i className="fas fa-clock" style={{ color: 'white', fontSize: '16px' }}></i>
               </div>
+              <div className="progress-number-modern" style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#d97706',
+                marginBottom: '4px'
+              }}>{stats.pending}</div>
+              <div className="progress-label-modern" style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>Pending</div>
             </div>
-            <div className="progress-card refer-back">
-              <div className="progress-circle">
-                <span className="progress-number">{stats.referBack}</span>
-                <span className="progress-label">Refer Back</span>
+            
+            <div className="progress-card-modern refer-back" style={{
+              background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
+              border: '2px solid #ef4444',
+              borderRadius: '12px',
+              padding: '16px',
+              boxShadow: '0 4px 12px rgba(239, 68, 68, 0.15)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              textAlign: 'center'
+            }}>
+              <div className="progress-icon-modern" style={{
+                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 8px auto',
+                boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)'
+              }}>
+                <i className="fas fa-undo" style={{ color: 'white', fontSize: '16px' }}></i>
               </div>
+              <div className="progress-number-modern" style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#dc2626',
+                marginBottom: '4px'
+              }}>{stats.referBack}</div>
+              <div className="progress-label-modern" style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#ef4444',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>Refer Back</div>
             </div>
-            <div className="progress-card rejected">
-              <div className="progress-circle">
-                <span className="progress-number">{stats.rejected}</span>
-                <span className="progress-label">Rejected</span>
+            
+            <div className="progress-card-modern rejected" style={{
+              background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+              border: '2px solid #6b7280',
+              borderRadius: '12px',
+              padding: '16px',
+              boxShadow: '0 4px 12px rgba(107, 114, 128, 0.15)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              textAlign: 'center'
+            }}>
+              <div className="progress-icon-modern" style={{
+                background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 8px auto',
+                boxShadow: '0 2px 8px rgba(107, 114, 128, 0.3)'
+              }}>
+                <i className="fas fa-times" style={{ color: 'white', fontSize: '16px' }}></i>
               </div>
+              <div className="progress-number-modern" style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#4b5563',
+                marginBottom: '4px'
+              }}>{stats.rejected}</div>
+              <div className="progress-label-modern" style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#6b7280',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>Rejected</div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Sections - Recent Activities and Quick Actions */}
+        {/* Bottom Sections - Quick Actions */}
         <div className="bottom-sections">
-          {/* Recent Activities */}
-          <div className="section-card">
-            <div className="section-header">
-              <h3 className="section-title">Recent Activities</h3>
-              <a href="#" className="section-link">View All</a>
-            </div>
-            <div className="activities-list">
-              <div className="activity-item">
-                <div className="activity-content">
-                  <div className="activity-dot success"></div>
-                  <div>
-                    <div className="activity-text">Farmer profile updated</div>
-                    <div className="activity-time">20m ago</div>
-                  </div>
-                </div>
-                <div className="activity-badge success">SUCCESS</div>
-              </div>
-              <div className="activity-item">
-                <div className="activity-content">
-                  <div className="activity-dot success"></div>
-                  <div>
-                    <div className="activity-text">KYC verification completed</div>
-                    <div className="activity-time">1h ago</div>
-                  </div>
-                </div>
-                <div className="activity-badge success">SUCCESS</div>
-              </div>
-              <div className="activity-item">
-                <div className="activity-content">
-                  <div className="activity-dot error"></div>
-                  <div>
-                    <div className="activity-text">New farmer assigned</div>
-                    <div className="activity-time">2h ago</div>
-                  </div>
-                </div>
-                <div className="activity-badge pending">PENDING</div>
-              </div>
-            </div>
-          </div>
-
           {/* Quick Actions */}
           <div className="section-card">
             <div className="section-header">
@@ -550,8 +652,43 @@ const EmployeeDashboard = () => {
             </div>
             <div className="quick-actions-grid">
               <button 
-                className="quick-action-btn primary"
-                onClick={() => setShowFarmerForm(true)}
+                onClick={() => {
+                  // Switch to farmers tab and open the farmer form
+                  setActiveTab('farmers');
+                  setShowFarmerForm(true);
+                  console.log('🔄 Add New Farmer button clicked - switching to farmers tab and opening form');
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '16px 24px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(21, 128, 61, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transform: 'translateY(0)',
+                  position: 'relative',
+                  zIndex: 9999,
+                  pointerEvents: 'auto',
+                  minWidth: '160px',
+                  justifyContent: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 8px 20px rgba(21, 128, 61, 0.35)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.25)';
+                }}
               >
                 <i className="fas fa-user-plus"></i>
                 <span>Add New Farmer</span>
@@ -574,36 +711,206 @@ const EmployeeDashboard = () => {
           </div>
         </div>
 
-        {/* Todo List */}
-        <div className="todo-section">
-        <h3>To-Do List</h3>
-          <div className="todo-grid">
-            <div className="todo-card">
-              <h4>New Assignments</h4>
-              <p>{todoList.newAssignments.length} new farmers assigned</p>
+        {/* Todo List - Modern Style */}
+        <div className="todo-section-modern">
+          <div className="section-header-modern">
+            <h3 className="section-title-modern">
+              <i className="fas fa-tasks"></i>
+              To-Do List
+            </h3>
+            <p className="section-subtitle-modern">Manage your daily tasks and priorities</p>
+          </div>
+          <div className="todo-grid-modern">
+            <div className="todo-card-modern new-assignments" style={{
+              background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+              border: '2px solid #3b82f6',
+              borderRadius: '16px',
+              padding: '24px',
+              boxShadow: '0 8px 25px rgba(59, 130, 246, 0.15)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div className="todo-icon-modern" style={{
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                width: '50px',
+                height: '50px',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '16px',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+              }}>
+                <i className="fas fa-user-plus" style={{ color: 'white', fontSize: '20px' }}></i>
+              </div>
+              <h4 className="todo-title-modern" style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#1e40af',
+                marginBottom: '8px'
+              }}>New Assignments</h4>
+              <p className="todo-description-modern" style={{
+                fontSize: '14px',
+                color: '#1e40af',
+                marginBottom: '16px',
+                opacity: '0.8'
+              }}>{todoList.newAssignments.length} new farmers assigned</p>
               <button 
-                className="action-btn-small primary"
                 onClick={() => setActiveTab('farmers')}
+                style={{
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.25)',
+                  width: '100%'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)';
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.35)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.25)';
+                }}
               >
                 Review New
               </button>
             </div>
-            <div className="todo-card">
-              <h4>Pending Reviews</h4>
-              <p>{todoList.pendingReviews.length} cases pending</p>
+            
+            <div className="todo-card-modern pending-reviews" style={{
+              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+              border: '2px solid #f59e0b',
+              borderRadius: '16px',
+              padding: '24px',
+              boxShadow: '0 8px 25px rgba(245, 158, 11, 0.15)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div className="todo-icon-modern" style={{
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                width: '50px',
+                height: '50px',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '16px',
+                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+              }}>
+                <i className="fas fa-clock" style={{ color: 'white', fontSize: '20px' }}></i>
+              </div>
+              <h4 className="todo-title-modern" style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#d97706',
+                marginBottom: '8px'
+              }}>Pending Reviews</h4>
+              <p className="todo-description-modern" style={{
+                fontSize: '14px',
+                color: '#d97706',
+                marginBottom: '16px',
+                opacity: '0.8'
+              }}>{todoList.pendingReviews.length} cases pending</p>
               <button 
-                className="action-btn-small warning"
                 onClick={() => setActiveTab('farmers')}
+                style={{
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(245, 158, 11, 0.25)',
+                  width: '100%'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 6px 16px rgba(245, 158, 11, 0.35)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.25)';
+                }}
               >
                 Process Pending
               </button>
             </div>
-            <div className="todo-card">
-              <h4>Refer Back Cases</h4>
-              <p>{todoList.referBackCases.length} need attention</p>
+            
+            <div className="todo-card-modern refer-back-cases" style={{
+              background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
+              border: '2px solid #ef4444',
+              borderRadius: '16px',
+              padding: '24px',
+              boxShadow: '0 8px 25px rgba(239, 68, 68, 0.15)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div className="todo-icon-modern" style={{
+                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                width: '50px',
+                height: '50px',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '16px',
+                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+              }}>
+                <i className="fas fa-exclamation-triangle" style={{ color: 'white', fontSize: '20px' }}></i>
+              </div>
+              <h4 className="todo-title-modern" style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#dc2626',
+                marginBottom: '8px'
+              }}>Refer Back Cases</h4>
+              <p className="todo-description-modern" style={{
+                fontSize: '14px',
+                color: '#dc2626',
+                marginBottom: '16px',
+                opacity: '0.8'
+              }}>{todoList.referBackCases.length} need attention</p>
               <button 
-                className="action-btn-small info"
                 onClick={() => setActiveTab('farmers')}
+                style={{
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(239, 68, 68, 0.25)',
+                  width: '100%'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 6px 16px rgba(239, 68, 68, 0.35)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.25)';
+                }}
               >
                 Review Refer Back
               </button>

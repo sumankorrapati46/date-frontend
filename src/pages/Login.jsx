@@ -380,12 +380,12 @@ const Login = () => {
             <h2 className="welcome-header">{welcomeMessage}</h2>
           </div>
           
-          <nav className="topbar-menu">
-            <button className="topbar-btn" onClick={() => navigate('/')}>Home</button>
-            <button className="topbar-btn" onClick={() => navigate('/analytics')}>Dashboard</button>
-            <button className="topbar-btn" onClick={() => navigate('/menu')}>Menu</button>
-            <button className="topbar-btn" onClick={() => navigate('/about')}>About</button>
-          </nav>
+                      <nav className="topbar-menu">
+              <button className="topbar-btn" onClick={() => navigate('/')}>Home</button>
+              <button className="topbar-btn" onClick={() => navigate('/analytics')}>Dashboard</button>
+              <button className="topbar-btn" onClick={() => navigate('/menu')}>Menu</button>
+              <button className="topbar-btn" onClick={() => navigate('/about')}>About</button>
+            </nav>
         </div>
       </header>
       <div className="auth-wrapper">

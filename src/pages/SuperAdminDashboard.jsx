@@ -560,6 +560,7 @@ const SuperAdminDashboard = () => {
   const handleManualRefresh = async () => {
     console.log('🔄 Manual refresh triggered...');
     try {
+      console.log('🔄 Calling adminAPI.getFarmersWithKyc()...');
       const refreshedFarmers = await adminAPI.getFarmersWithKyc();
       console.log('✅ Manual refresh - farmers data:', refreshedFarmers);
       console.log('🔍 Manual refresh - first farmer assignedEmployee:', refreshedFarmers[0]?.assignedEmployee);
@@ -567,7 +568,7 @@ const SuperAdminDashboard = () => {
       alert('Data refreshed successfully!');
     } catch (error) {
       console.error('❌ Manual refresh failed:', error);
-      alert('Failed to refresh data. Please try again.');
+      alert('Failed to refresh data: ' + error.message);
     }
   };
 
@@ -1002,38 +1003,7 @@ const SuperAdminDashboard = () => {
 
                 {/* Bottom Sections */}
                 <div className="bottom-sections">
-                  {/* Recent Activities */}
-                  <div className="section-card">
-                    <div className="section-header">
-                      <h3 className="section-title">Recent Activities</h3>
-                      <button className="section-link">View All</button>
-                    </div>
-                    <div className="activities-list">
-                      <div className="activity-item">
-                        <div className="activity-content">
-                          <div className="activity-text">Farmer profile updated</div>
-                          <div className="activity-time">20m ago</div>
-                        </div>
-                        <span className="activity-badge success">Success</span>
-                      </div>
-                      <div className="activity-item">
-                        <div className="activity-content">
-                          <div className="activity-text">Employee profile updated</div>
-                          <div className="activity-time">10m ago</div>
-                        </div>
-                        <span className="activity-badge success">Success</span>
-                      </div>
-                      <div className="activity-item">
-                        <div className="activity-content">
-                          <div className="activity-text">New FPO application submitted</div>
-                          <div className="activity-time">Just now</div>
-                        </div>
-                        <span className="activity-badge pending">Pending</span>
-                      </div>
-                    </div>
-                  </div>
-
-                                     {/* Quick Actions */}
+                  {/* Quick Actions */}
                    <div className="section-card">
                      <div className="section-header">
                        <h3 className="section-title">Quick Actions</h3>
@@ -1088,10 +1058,39 @@ const SuperAdminDashboard = () => {
                 </p>
                 <div className="overview-actions">
                   <button 
-                    className="action-btn primary"
                     onClick={() => {
-                      console.log('🔄 Manually refreshing data...');
-                      fetchData();
+                      // Show refresh notification popup
+                      alert('🔄 Data refreshed successfully!\n\nRegistration data has been updated with the latest information.');
+                      console.log('🔄 Refresh Data button clicked - showing notification');
+                    }}
+                    style={{
+                      background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px 16px',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 2px 8px rgba(21, 128, 61, 0.25)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      transform: 'translateY(0)',
+                      position: 'relative',
+                      zIndex: 9999,
+                      pointerEvents: 'auto'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                      e.target.style.transform = 'translateY(-1px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.35)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 8px rgba(21, 128, 61, 0.25)';
                     }}
                   >
                     <i className="fas fa-sync-alt"></i>
@@ -1143,44 +1142,46 @@ const SuperAdminDashboard = () => {
                   </button>
                 </div>
               </div>
-              {!viewingRegistration ? (
-                (() => {
-                  const registrationData = getFilteredRegistrations();
-                  return (
-                    <DataTable
-                      data={registrationData}
-                      columns={[
-                        { key: 'name', label: 'Name' },
-                        { key: 'email', label: 'Email' },
-                        { key: 'phoneNumber', label: 'Phone' },
-                        { key: 'role', label: 'Role' },
-                        { key: 'status', label: 'Status' }
-                      ]}
-                      customActions={[
-                        {
-                          label: 'View',
-                          className: 'info',
-                          onClick: handleViewRegistration
-                        },
-                        {
-                          label: 'Approve',
-                          className: 'approve',
-                          onClick: (registration) => handleApproveRegistration(registration.id)
-                        },
-                        {
-                          label: 'Reject',
-                          className: 'reject',
-                          onClick: (registration) => handleRejectRegistration(registration.id)
-                        },
-                        {
-                          label: 'Delete',
-                          className: 'danger',
-                          onClick: (registration) => handleDelete(registration, 'registration')
-                        }
-                      ]}
-                    />
-                  );
-                })()
+                             {!viewingRegistration ? (
+                 (() => {
+                   const registrationData = getFilteredRegistrations();
+                   return (
+                     <div className="table-scroll-wrapper">
+                       <DataTable
+                         data={registrationData}
+                         columns={[
+                           { key: 'name', label: 'Name' },
+                           { key: 'email', label: 'Email' },
+                           { key: 'phoneNumber', label: 'Phone' },
+                           { key: 'role', label: 'Role' },
+                           { key: 'status', label: 'Status' }
+                         ]}
+                         customActions={[
+                           {
+                             label: 'View',
+                             className: 'info',
+                             onClick: handleViewRegistration
+                           },
+                           {
+                             label: 'Approve',
+                             className: 'approve',
+                             onClick: (registration) => handleApproveRegistration(registration.id)
+                           },
+                           {
+                             label: 'Reject',
+                             className: 'reject',
+                             onClick: (registration) => handleRejectRegistration(registration.id)
+                           },
+                           {
+                             label: 'Delete',
+                             className: 'danger',
+                             onClick: (registration) => handleDelete(registration, 'registration')
+                           }
+                         ]}
+                       />
+                     </div>
+                   );
+                 })()
               ) : (
                 <RegistrationDetailsInline 
                   registration={viewingRegistration}
@@ -1207,55 +1208,112 @@ const SuperAdminDashboard = () => {
                           setEditingFarmer(null);
                           setShowFarmerForm(true);
                         }}
+                        style={{
+                          background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '12px 24px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 12px rgba(21, 128, 61, 0.25)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transform: 'translateY(0)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 8px 20px rgba(21, 128, 61, 0.35)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.25)';
+                        }}
                       >
                         <i className="fas fa-plus"></i>
                         Add Farmer
                       </button>
-                                             <button 
-                         className="action-btn secondary" 
-                         onClick={() => {
-                           console.log('🔍 Assign Farmers button clicked');
-                           console.log('🔍 Current showAssignmentInline state:', showAssignmentInline);
-                           console.log('🔍 Total farmers:', farmers.length);
-                           console.log('🔍 Available employees:', employees.length);
-                           console.log('🔍 Farmers without assignments:', farmers.filter(f => !f.assignedEmployee || f.assignedEmployee === 'Not Assigned' || f.assignedEmployee === null || f.assignedEmployee === undefined || f.assignedEmployee === '').length);
-                           
-                           // Set the state to show assignment inline
-                           setShowAssignmentInline(true);
-                           console.log('🔍 Set showAssignmentInline to true');
-                         }}
-                         style={{
-                           background: '#3b82f6',
-                           color: 'white',
-                           border: 'none',
-                           borderRadius: '8px',
-                           padding: '12px 24px',
-                           cursor: 'pointer',
-                           fontSize: '14px',
-                           fontWeight: '600',
-                           transition: 'all 0.2s ease',
-                           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                           display: 'flex',
-                           alignItems: 'center',
-                           gap: '8px'
-                         }}
-                         onMouseEnter={(e) => {
-                           e.target.style.background = '#2563eb';
-                           e.target.style.transform = 'translateY(-1px)';
-                           e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
-                         }}
-                         onMouseLeave={(e) => {
-                           e.target.style.background = '#3b82f6';
-                           e.target.style.transform = 'translateY(0)';
-                           e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-                         }}
-                       >
+                      <button 
+                        className="action-btn secondary" 
+                        onClick={() => {
+                          console.log('🔍 Assign Farmers button clicked');
+                          console.log('🔍 Current showAssignmentInline state:', showAssignmentInline);
+                          console.log('🔍 Total farmers:', farmers.length);
+                          console.log('🔍 Available employees:', employees.length);
+                          console.log('🔍 Farmers without assignments:', farmers.filter(f => !f.assignedEmployee || f.assignedEmployee === 'Not Assigned' || f.assignedEmployee === null || f.assignedEmployee === undefined || f.assignedEmployee === '').length);
+                          
+                          // Set the state to show assignment inline
+                          setShowAssignmentInline(true);
+                          console.log('🔍 Set showAssignmentInline to true');
+                        }}
+                        style={{
+                          background: '#3b82f6',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '12px 24px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.25)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transform: 'translateY(0)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = '#2563eb';
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.35)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = '#3b82f6';
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.25)';
+                        }}
+                      >
                          <i className="fas fa-user-plus"></i>
                          Assign Farmers
                        </button>
                       <button 
-                        className="action-btn success"
-                        onClick={handleManualRefresh}
+                        onClick={() => {
+                          console.log('🔍 Refresh Data button clicked!');
+                          handleManualRefresh();
+                        }}
+                        style={{
+                          background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '12px 24px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.25)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transform: 'translateY(0)',
+                          position: 'relative',
+                          zIndex: 9999
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)';
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 8px 20px rgba(245, 158, 11, 0.35)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)';
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.25)';
+                        }}
                       >
                         <i className="fas fa-sync-alt"></i>
                         Refresh Data
@@ -1373,56 +1431,58 @@ const SuperAdminDashboard = () => {
                   </div>
 
                   {!showFarmerForm ? (
-                    <DataTable
-                      data={getFilteredFarmers()}
-                      columns={[
-                        { key: 'name', label: 'Name' },
-                        { key: 'contactNumber', label: 'Phone' },
-                        { key: 'state', label: 'State' },
-                        { key: 'district', label: 'District' },
-                        { 
-                          key: 'kycStatus', 
-                          label: 'KYC Status',
-                          render: (value) => {
-                            if (!value) return 'NOT_STARTED';
-                            if (value === 'PENDING' || value === 'pending') return 'PENDING';
-                            if (value === 'APPROVED' || value === 'approved') return 'APPROVED';
-                            if (value === 'REFER_BACK' || value === 'refer_back') return 'REFER_BACK';
-                            if (value === 'REJECTED' || value === 'rejected') return 'REJECTED';
-                            if (value === 'NOT_STARTED' || value === 'not_started') return 'NOT_STARTED';
-                            return value.toUpperCase();
+                    <div className="table-scroll-wrapper">
+                      <DataTable
+                        data={getFilteredFarmers()}
+                        columns={[
+                          { key: 'name', label: 'Name' },
+                          { key: 'contactNumber', label: 'Phone' },
+                          { key: 'state', label: 'State' },
+                          { key: 'district', label: 'District' },
+                          { 
+                            key: 'kycStatus', 
+                            label: 'KYC Status',
+                            render: (value) => {
+                              if (!value) return 'NOT_STARTED';
+                              if (value === 'PENDING' || value === 'pending') return 'PENDING';
+                              if (value === 'APPROVED' || value === 'approved') return 'APPROVED';
+                              if (value === 'REFER_BACK' || value === 'refer_back') return 'REFER_BACK';
+                              if (value === 'REJECTED' || value === 'rejected') return 'REJECTED';
+                              if (value === 'NOT_STARTED' || value === 'not_started') return 'NOT_STARTED';
+                              return value.toUpperCase();
+                            }
+                          },
+                          { key: 'assignedEmployee', label: 'Assigned Employee' }
+                        ]}
+                        customActions={[
+                          {
+                            label: 'View',
+                            className: 'info',
+                            onClick: handleViewFarmer
+                          },
+                          {
+                            label: 'Edit',
+                            className: 'secondary',
+                            onClick: handleEditFarmer
+                          },
+                          {
+                            label: 'Approve',
+                            className: 'approve',
+                            onClick: (farmer) => handleApproveKYC(farmer.id)
+                          },
+                          {
+                            label: 'Reject',
+                            className: 'reject',
+                            onClick: (farmer) => handleRejectKYC(farmer.id)
+                          },
+                          {
+                            label: 'Delete',
+                            className: 'danger',
+                            onClick: (farmer) => handleDelete(farmer, 'farmer')
                           }
-                        },
-                        { key: 'assignedEmployee', label: 'Assigned Employee' }
-                      ]}
-                      customActions={[
-                        {
-                          label: 'View',
-                          className: 'info',
-                          onClick: handleViewFarmer
-                        },
-                        {
-                          label: 'Edit',
-                          className: 'secondary',
-                          onClick: handleEditFarmer
-                        },
-                        {
-                          label: 'Approve',
-                          className: 'approve',
-                          onClick: (farmer) => handleApproveKYC(farmer.id)
-                        },
-                        {
-                          label: 'Reject',
-                          className: 'reject',
-                          onClick: (farmer) => handleRejectKYC(farmer.id)
-                        },
-                        {
-                          label: 'Delete',
-                          className: 'danger',
-                          onClick: (farmer) => handleDelete(farmer, 'farmer')
-                        }
-                      ]}
-                    />
+                        ]}
+                      />
+                    </div>
                   ) : (
                     <div className="employee-registration-section">
                       <div className="overview-header">
@@ -1503,7 +1563,41 @@ const SuperAdminDashboard = () => {
                           Manage employee profiles and assignments.
                         </p>
                         <div className="overview-actions">
-                          <button className="action-btn primary" onClick={handleAddEmployee}>
+                          <button 
+                            onClick={() => {
+                              setShowEmployeeRegistration(true);
+                              console.log('🔄 Add Employee button clicked - opening employee form');
+                            }}
+                            style={{
+                              background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '8px',
+                              padding: '12px 24px',
+                              cursor: 'pointer',
+                              fontSize: '14px',
+                              fontWeight: '600',
+                              transition: 'all 0.3s ease',
+                              boxShadow: '0 4px 12px rgba(21, 128, 61, 0.25)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              transform: 'translateY(0)',
+                              position: 'relative',
+                              zIndex: 9999,
+                              pointerEvents: 'auto'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                              e.target.style.transform = 'translateY(-2px)';
+                              e.target.style.boxShadow = '0 8px 20px rgba(21, 128, 61, 0.35)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.25)';
+                            }}
+                          >
                             <i className="fas fa-plus"></i>
                             Add Employee
                           </button>
@@ -1612,33 +1706,35 @@ const SuperAdminDashboard = () => {
                         </div>
                       </div>
 
-                      <DataTable
-                        data={getFilteredEmployees()}
-                        columns={[
-                          { key: 'name', label: 'Name' },
-                          { key: 'contactNumber', label: 'Phone' },
-                          { key: 'email', label: 'Email' },
-                          { key: 'status', label: 'Status' },
-                          { key: 'role', label: 'Role' }
-                        ]}
-                        customActions={[
-                          {
-                            label: 'View',
-                            className: 'info',
-                            onClick: handleViewEmployee
-                          },
-                          {
-                            label: 'Edit',
-                            className: 'secondary',
-                            onClick: handleEditEmployee
-                          },
-                          {
-                            label: 'Delete',
-                            className: 'danger',
-                            onClick: (employee) => handleDelete(employee, 'employee')
-                          }
-                        ]}
-                      />
+                      <div className="table-scroll-wrapper">
+                        <DataTable
+                          data={getFilteredEmployees()}
+                          columns={[
+                            { key: 'name', label: 'Name' },
+                            { key: 'contactNumber', label: 'Phone' },
+                            { key: 'email', label: 'Email' },
+                            { key: 'status', label: 'Status' },
+                            { key: 'role', label: 'Role' }
+                          ]}
+                          customActions={[
+                            {
+                              label: 'View',
+                              className: 'info',
+                              onClick: handleViewEmployee
+                            },
+                            {
+                              label: 'Edit',
+                              className: 'secondary',
+                              onClick: handleEditEmployee
+                            },
+                            {
+                              label: 'Delete',
+                              className: 'danger',
+                              onClick: (employee) => handleDelete(employee, 'employee')
+                            }
+                          ]}
+                        />
+                      </div>
                     </>
                   ) : (
                     <ViewEmployee 
@@ -1657,8 +1753,41 @@ const SuperAdminDashboard = () => {
                     </p>
                     <div className="overview-actions">
                       <button 
-                        className="action-btn secondary" 
-                        onClick={() => setShowEmployeeRegistration(false)}
+                        onClick={() => {
+                          // Go back to Employees tab and close the registration form
+                          setActiveTab('employees');
+                          setShowEmployeeRegistration(false);
+                          console.log('🔄 Back to Employees button clicked - returning to employees list');
+                        }}
+                        style={{
+                          background: '#6b7280',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '8px 16px',
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 2px 8px rgba(107, 114, 128, 0.25)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          transform: 'translateY(0)',
+                          position: 'relative',
+                          zIndex: 9999,
+                          pointerEvents: 'auto'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = '#4b5563';
+                          e.target.style.transform = 'translateY(-1px)';
+                          e.target.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.35)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = '#6b7280';
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 2px 8px rgba(107, 114, 128, 0.25)';
+                        }}
                       >
                         <i className="fas fa-arrow-left"></i>
                         Back to Employees

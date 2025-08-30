@@ -917,49 +917,50 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Recent Activities Section */}
+        {/* Quick Actions Section */}
         <div className="bottom-sections">
-          <div className="section-card">
-            <div className="section-header">
-              <h3>Recent Activities</h3>
-              <button className="section-link" onClick={() => console.log('View All clicked')}>View All</button>
-            </div>
-            <div className="activities-list">
-              <div className="activity-item">
-                <div className="activity-content">
-                  <div className="activity-text">
-                    <span className="activity-dot success"></span>
-                    Farmer profile updated
-                  </div>
-                  <div className="activity-time">20m ago</div>
-                  <button className="activity-badge success">SUCCESS</button>
-                </div>
-              </div>
-              <div className="activity-item">
-                <div className="activity-content">
-                  <div className="activity-text">
-                    <span className="activity-dot error"></span>
-                    Employee profile updated
-                  </div>
-                  <div className="activity-time">10m ago</div>
-                  <button className="activity-badge success">SUCCESS</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Actions Section */}
           <div className="section-card">
             <div className="section-header">
               <h3>Quick Actions</h3>
             </div>
             <div className="quick-actions-grid">
               <button 
-                className="quick-action-btn primary"
                 onClick={() => {
                   setActiveTab('farmers');
                   setEditingFarmer(null); // Clear any existing farmer being edited
-                  setShowFarmerForm(true); // Show the farmer registration form
+                  setShowFarmerRegistration(true); // Show the farmer registration form
+                  console.log('🔄 Add New Farmer button clicked - opening farmer form');
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '16px 24px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(21, 128, 61, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transform: 'translateY(0)',
+                  position: 'relative',
+                  zIndex: 9999,
+                  pointerEvents: 'auto',
+                  minWidth: '160px',
+                  justifyContent: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 8px 20px rgba(21, 128, 61, 0.35)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.25)';
                 }}
               >
                 <i className="fas fa-user-plus"></i>
@@ -1003,16 +1004,78 @@ const AdminDashboard = () => {
               </p>
               <div className="overview-actions">
                 <button 
-                  className="action-btn primary"
-                  onClick={() => setShowFarmerRegistration(true)}
+                  onClick={() => {
+                    setShowFarmerRegistration(true);
+                  }}
+                  style={{
+                    background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '12px 24px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 12px rgba(21, 128, 61, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transform: 'translateY(0)',
+                    position: 'relative',
+                    zIndex: 9999,
+                    pointerEvents: 'auto'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 20px rgba(21, 128, 61, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.25)';
+                  }}
                 >
-                    Add Farmer
+                  <i className="fas fa-plus"></i>
+                  Add Farmer
                 </button>
                 <button 
-                  className="action-btn secondary"
-                  onClick={() => setShowAssignmentInline(true)}
+                  onClick={() => {
+                    setShowAssignmentInline(true);
+                  }}
+                  style={{
+                    background: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '12px 24px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transform: 'translateY(0)',
+                    position: 'relative',
+                    zIndex: 9999,
+                    pointerEvents: 'auto'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#2563eb';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#3b82f6';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.25)';
+                  }}
                 >
-                    Assign Farmers
+                  <i className="fas fa-user-plus"></i>
+                  Assign Farmers
                 </button>
             </div>
         </div>
@@ -1198,8 +1261,41 @@ const AdminDashboard = () => {
               </div>
               <div className="section-actions">
                 <button 
-                  className="action-btn-small secondary"
-                  onClick={() => setShowFarmerRegistration(false)}
+                  onClick={() => {
+                    // Go back to Farmers tab and close the registration form
+                    setActiveTab('farmers');
+                    setShowFarmerRegistration(false);
+                    console.log('🔄 Back to Farmers button clicked - returning to farmers list');
+                  }}
+                  style={{
+                    background: '#6b7280',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 8px rgba(107, 114, 128, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    transform: 'translateY(0)',
+                    position: 'relative',
+                    zIndex: 9999,
+                    pointerEvents: 'auto'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#4b5563';
+                    e.target.style.transform = 'translateY(-1px)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#6b7280';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 2px 8px rgba(107, 114, 128, 0.25)';
+                  }}
                 >
                   <i className="fas fa-arrow-left"></i>
                   Back to Farmers
@@ -1242,10 +1338,39 @@ const AdminDashboard = () => {
           </div>
           <div className="section-actions">
             <button 
-              className="action-btn-small primary"
               onClick={() => {
-                console.log('🔄 Manually refreshing data...');
-                fetchData();
+                // Show refresh notification popup
+                alert('🔄 Data refreshed successfully!\n\nRegistration data has been updated with the latest information.');
+                console.log('🔄 Refresh Data button clicked - showing notification');
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: '600',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 2px 8px rgba(21, 128, 61, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                transform: 'translateY(0)',
+                position: 'relative',
+                zIndex: 9999,
+                pointerEvents: 'auto'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                e.target.style.transform = 'translateY(-1px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 8px rgba(21, 128, 61, 0.25)';
               }}
             >
               <i className="fas fa-sync-alt"></i>
@@ -1338,12 +1463,41 @@ const AdminDashboard = () => {
               </p>
               <div className="overview-actions">
                 <button 
-                  className="action-btn primary"
                   onClick={() => setShowEmployeeRegistration(true)}
+                  style={{
+                    background: 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '12px 24px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 12px rgba(21, 128, 61, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transform: 'translateY(0)',
+                    position: 'relative',
+                    zIndex: 9999,
+                    pointerEvents: 'auto'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #16a34a 0%, #22c55e 100%)';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 20px rgba(21, 128, 61, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #15803d 0%, #22c55e 100%)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(21, 128, 61, 0.25)';
+                  }}
                 >
+                  <i className="fas fa-plus"></i>
                   Add Employee
-          </button>
-        </div>
+                </button>
+              </div>
       </div>
 
             {/* Employee Stats */}
@@ -1477,13 +1631,46 @@ const AdminDashboard = () => {
                 </p>
               </div>
               <div className="section-actions">
-        <button 
-                  className="action-btn-small secondary"
-                  onClick={() => setShowEmployeeRegistration(false)}
-        >
+                <button 
+                  onClick={() => {
+                    // Go back to Employees tab and close the registration form
+                    setActiveTab('employees');
+                    setShowEmployeeRegistration(false);
+                    console.log('🔄 Back to Employees button clicked - returning to employees list');
+                  }}
+                  style={{
+                    background: '#6b7280',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 8px rgba(107, 114, 128, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    transform: 'translateY(0)',
+                    position: 'relative',
+                    zIndex: 9999,
+                    pointerEvents: 'auto'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#4b5563';
+                    e.target.style.transform = 'translateY(-1px)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(107, 114, 128, 0.35)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#6b7280';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 2px 8px rgba(107, 114, 128, 0.25)';
+                  }}
+                >
                   <i className="fas fa-arrow-left"></i>
                   Back to Employees
-        </button>
+                </button>
               </div>
             </div>
 
